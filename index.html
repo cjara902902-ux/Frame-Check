@@ -3,11 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google-adsense-account" content="ca-pub-9530629621333099">
 <title>FrameCheck: can your PC run it? FPS estimator and upgrade advisor</title>
 <meta name="description" content="Enter your CPU, GPU and RAM, pick a game, and see estimated FPS at 1080p, 1440p and 4K. Then find the cheapest upgrade that reaches your target frame rate.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<!-- Google Fonts is loaded by the consent script only after the visitor allows it. -->
 <script>try{var t=localStorage.getItem('fc-theme');if(t){document.documentElement.setAttribute('data-theme',t)}}catch(e){}</script>
 <style>
 :root{
@@ -277,9 +276,78 @@ details p{margin:10px 0 0;max-width:68ch;color:var(--dim)}
   .monitor{padding:20px 18px}
   .msg{max-width:96%}
 }
+
+/* ---- consent banner, legal dialogs, skip link ---- */
+.skip{position:absolute;left:12px;top:-64px;z-index:300;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-weight:700;text-decoration:none}
+.skip:focus{top:12px}
+main:focus{outline:none}
+.affnote{font-size:12px;color:var(--dim)}
+
+.cc{position:fixed;left:16px;bottom:16px;z-index:100;width:min(580px,calc(100vw - 32px));max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);overflow:auto;background:var(--surface);color:var(--ink);border:2px solid var(--ink);border-radius:14px;padding:20px 22px;box-shadow:0 28px 56px -28px rgba(7,16,31,.6)}
+.cc h2{font-size:28px;margin:0 0 8px}
+.cc h2:focus{outline:none}
+.cc p{margin:0 0 12px;font-size:14.5px;line-height:1.5;color:var(--dim);max-width:64ch}
+.cc-prefs{display:grid;gap:10px;margin:2px 0 16px}
+.cc-opt{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:start;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface2)}
+.cc-opt strong{display:block;font-size:15px;color:var(--ink)}
+.cc-opt p{margin:2px 0 0;font-size:13px}
+.cc-opt input{width:22px;height:22px;margin:2px 0 0;accent-color:var(--ink)}
+.cc-actions{display:flex;flex-wrap:wrap;gap:10px}
+.cc-actions .btn{flex:1 1 130px;min-height:46px}
+
+.foot nav{display:flex;flex-wrap:wrap;gap:8px 22px;margin:0 0 16px}
+.foot nav a,.foot nav .linkbtn{font:600 14px var(--f-body)}
+
+dialog.legal{width:min(780px,calc(100vw - 24px));max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px);padding:0;border:2px solid var(--ink);border-radius:14px;background:var(--surface);color:var(--ink);overflow:auto;overscroll-behavior:contain}
+dialog.legal::backdrop{background:rgba(7,16,31,.62)}
+.legal-head{position:sticky;top:0;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 22px;background:var(--surface);border-bottom:1px solid var(--line)}
+.legal-head h2{margin:0;font-size:clamp(26px,4vw,34px)}
+.legal-body{padding:8px 22px 28px;font-size:15px}
+.legal-body h3{margin:28px 0 6px}
+.legal-body p,.legal-body ul{margin:0 0 12px;max-width:70ch}
+.legal-body ul{padding-left:20px}
+.legal-body li{margin:4px 0}
+.legal-body .tablewrap{margin:8px 0 14px}
+.legal-body table{border-collapse:collapse;width:100%;min-width:560px;font-size:14px}
+.legal-body th,.legal-body td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+.legal-body th{font-weight:700}
+.ph{background:#FFE58A;color:#0E1A2E;border-radius:3px;padding:0 4px}
+body:has(dialog[open]){overflow:hidden}
+@media (max-width:640px){
+  .cc{left:8px;right:8px;bottom:8px;width:auto;padding:16px}
+  .legal-head,.legal-body{padding-left:16px;padding-right:16px}
+}
 </style>
 </head>
 <body>
+
+<a class="skip" href="#top">Skip to main content</a>
+
+<div class="cc" id="cc" role="dialog" aria-labelledby="ccTitle" aria-describedby="ccText" hidden>
+  <h2 id="ccTitle" tabindex="-1">Your privacy choices</h2>
+  <div id="ccText">
+    <p>This site saves your PC, saved rigs and theme in your own browser so the calculator can remember them. That data stays on your device. With your permission we also load Google Fonts and show ads from Google, which can set cookies and see your IP address. You can change your mind at any time from the footer. <a href="#privacy">Privacy policy</a></p>
+  </div>
+  <div class="cc-prefs" id="ccPrefs" hidden>
+    <div class="cc-opt">
+      <div><strong id="ccNecT">Necessary storage</strong><p id="ccNecD">Remembers your PC, saved rigs, benchmark log, theme and this choice. Stays in your browser and is never sent to us. Always on.</p></div>
+      <input type="checkbox" checked disabled aria-labelledby="ccNecT" aria-describedby="ccNecD">
+    </div>
+    <div class="cc-opt">
+      <div><strong id="ccFontsT">Google Fonts</strong><p id="ccFontsD">Loads the site's typefaces from Google's servers, which sends Google your IP address. Without it the site uses your device's standard fonts.</p></div>
+      <input type="checkbox" id="ccFonts" aria-labelledby="ccFontsT" aria-describedby="ccFontsD">
+    </div>
+    <div class="cc-opt">
+      <div><strong id="ccAdsT">Advertising</strong><p id="ccAdsD">Shows ads from Google AdSense. Google and its partners can use cookies and identifiers to show, limit and measure ads and to personalize them. Without it there are no ads.</p></div>
+      <input type="checkbox" id="ccAds" aria-labelledby="ccAdsT" aria-describedby="ccAdsD">
+    </div>
+  </div>
+  <div class="cc-actions">
+    <button type="button" class="btn" id="ccReject">Reject all</button>
+    <button type="button" class="btn" id="ccAccept">Accept all</button>
+    <button type="button" class="btn alt" id="ccCustom" aria-controls="ccPrefs" aria-expanded="false">Customize</button>
+  </div>
+</div>
 
 <header class="site">
   <div class="wrap">
@@ -305,11 +373,11 @@ details p{margin:10px 0 0;max-width:68ch;color:var(--dim)}
   </div>
 </header>
 
-<main id="top">
+<main id="top" tabindex="-1">
   <div class="wrap hero">
     <div>
       <h1>Can your PC run it?</h1>
-      <p class="lede">Enter your processor, graphics card and memory, pick a game, and see the frame rate you can expect at every resolution and quality setting. Then find the cheapest upgrade that gets you to your target.</p>
+      <p class="lede">Enter your processor, graphics card and memory, pick a game, and see the estimated frame rate at every resolution and quality setting. Then find the cheapest upgrade that gets you to your target.</p>
 
       <div class="rig" role="group" aria-label="Your hardware and game">
         <div class="field">
@@ -396,7 +464,7 @@ details p{margin:10px 0 0;max-width:68ch;color:var(--dim)}
 
         <section class="section" id="upgrade" aria-labelledby="upTitle">
           <h2 id="upTitle">What should I upgrade?</h2>
-          <p class="sub">Set the settings you want to play at and the frame rate you are aiming for. We test each part in your PC for the game you picked and show the cheapest way to get there.</p>
+          <p class="sub">Set the settings you want to play at and the frame rate you are aiming for. We model each part in your PC for the game you picked and show the cheapest option in our parts list that gets you there.</p>
 
           <div class="controls">
             <div class="ctl"><span id="lblRes">Resolution</span>
@@ -481,7 +549,7 @@ details p{margin:10px 0 0;max-width:68ch;color:var(--dim)}
 
         <section class="section" id="power" aria-labelledby="pwrTitle">
           <h2 id="pwrTitle">Power supply calculator</h2>
-          <p class="sub">We add up what your graphics card, processor and the rest of the PC draw while gaming, then size a power supply with room to spare.</p>
+          <p class="sub">We add up what your graphics card, processor and the rest of the PC draw while gaming, then size a power supply with room to spare. These are estimates, so check the maker's specifications before you buy, and ask a qualified person if you are unsure about installing a power supply.</p>
           <div class="controls">
             <div class="ctl"><label for="psuDrives"><span>Drives (SSD or hard drive)</span></label>
               <select id="psuDrives"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4 or more</option></select></div>
@@ -493,7 +561,7 @@ details p{margin:10px 0 0;max-width:68ch;color:var(--dim)}
 
         <section class="section" id="heat" aria-labelledby="heatTitle">
           <h2 id="heatTitle">Temperature estimator</h2>
-          <p class="sub">Tell us how your PC is cooled and we estimate what the processor and graphics card reach while you game.</p>
+          <p class="sub">Tell us how your PC is cooled and we estimate what the processor and graphics card reach while you game. Real temperatures depend on your case, fans, thermal paste and room, so treat these numbers as a rough guide.</p>
           <div class="controls">
             <div class="ctl"><label for="heatCooler"><span>CPU cooler</span></label>
               <select id="heatCooler"><option value="stock">Stock cooler that came with the CPU</option><option value="tower">Tower air cooler</option><option value="aio240">Dual-tower air or 240 mm liquid cooler</option><option value="aio360">360 mm liquid cooler</option></select></div>
@@ -575,13 +643,13 @@ details p{margin:10px 0 0;max-width:68ch;color:var(--dim)}
 
       <section class="section" id="partners" aria-labelledby="partTitle">
         <h2 id="partTitle">Where to buy and build</h2>
-        <p class="sub">Links to shops and tools we use for price checks. We may earn a commission if you buy through them, at no extra cost to you.</p>
+        <p class="sub">Links to shops and tools for price checks. We may earn a commission if you buy through them, at no extra cost to you.</p>
         <div class="partners" id="partnerList"></div>
       </section>
 
       <section class="section" id="faq" aria-labelledby="faqTitle">
         <h2 id="faqTitle">How it works</h2>
-        <details><summary>How accurate are the FPS numbers?</summary><p>They are estimates, not measurements. Each game has a baseline frame rate on a reference PC taken from typical public benchmark results. We scale it for your graphics card, processor, memory, resolution and quality preset. Ray tracing and frame generation are modeled as typical multipliers, and 1% lows are estimated from what limits your PC. Expect real results to land within about 15 percent, and further off in unusual scenes, with mods, or on very old drivers.</p></details>
+        <details><summary>How accurate are the FPS numbers?</summary><p>They are estimates, not measurements. Each game has a baseline frame rate on a reference PC taken from typical public benchmark results. We scale it for your graphics card, processor, memory, resolution and quality preset. Ray tracing and frame generation are modeled as typical multipliers, and 1% lows are estimated from what limits your PC. Real results can differ, sometimes by a wide margin, especially in unusual scenes, with mods, or on very old drivers. Treat every figure as a rough guide, not a promise.</p></details>
         <details><summary>Why does my CPU matter as much as my GPU?</summary><p>Every frame needs both chips. The graphics card draws it, the processor prepares it. Whichever is slower sets your ceiling. If the CPU is the limit, a faster graphics card will barely change your frame rate, and the advisor will say so.</p></details>
         <details><summary>What does the upscaling switch do?</summary><p>DLSS, FSR and XeSS render the game at a lower internal resolution and rebuild the image. On Quality mode that typically lifts frame rate by 20 to 45 percent depending on resolution. It helps most when your graphics card is the limit.</p></details>
         <details><summary>How does this site make money?</summary><p>From ads and from affiliate and referral links to shops. The upgrade ranking is calculated from estimated frame rate gained per dollar and does not depend on who pays us. Prices are rough guides, so always check the current price with the shop.</p></details>
@@ -602,9 +670,161 @@ details p{margin:10px 0 0;max-width:68ch;color:var(--dim)}
 </main>
 
 <footer class="wrap foot">
-  <p><strong>Affiliate disclosure.</strong> Some links on this site are affiliate or referral links. If you buy through them we may earn a commission at no extra cost to you. Ads are labeled and never change the estimates or the upgrade ranking.</p>
-  <p>FPS figures are estimates for guidance only. Prices are rough US dollar guides and change often. Check compatibility, power supply capacity and case clearance before buying any part. Product names are trademarks of their owners, and this site is not affiliated with them.</p>
+  <nav aria-label="Legal">
+    <a href="#privacy">Privacy policy</a>
+    <a href="#terms">Terms of use</a>
+    <a href="#disclosures">Disclosures and accessibility</a>
+    <button type="button" class="linkbtn" id="ccReopen">Cookie settings and your privacy choices</button>
+  </nav>
+  <p><strong>Affiliate disclosure.</strong> Some links on this site are affiliate or referral links. If you buy through them we may earn a commission at no extra cost to you. Ads are labeled and never change the estimates or the upgrade ranking. <span class="amz" hidden>As an Amazon Associate I earn from qualifying purchases.</span></p>
+  <p>FPS figures, temperatures, power draw and prices are estimates for guidance only, not measurements or guarantees. Prices are rough US dollar guides and change often. Check compatibility, power supply capacity and case clearance before buying any part, and follow the manufacturer's instructions when you install it. Product names are trademarks of their owners, and this site is not affiliated with them.</p>
+  <p>&copy; <span data-year>2026</span> <span data-fill="operator" class="ph">[your name or company]</span>. Use of this site is subject to the <a href="#terms">terms of use</a> and <a href="#privacy">privacy policy</a>.</p>
 </footer>
+
+<dialog class="legal" id="dlg-privacy" aria-labelledby="dlgPrivacyT">
+  <div class="legal-head"><h2 id="dlgPrivacyT">Privacy and cookie policy</h2><button type="button" class="btn alt" data-close>Close</button></div>
+  <div class="legal-body">
+    <p class="dimtxt">Effective <span data-fill="effective" class="ph">[date]</span></p>
+
+    <h3>Who we are</h3>
+    <p>This website, FrameCheck (the "Site"), is run by <span data-fill="operator" class="ph">[your name or company]</span>. For privacy questions or requests, write to <span data-fill="email" class="ph">[your email address]</span>.</p>
+
+    <h3>The short version</h3>
+    <ul>
+      <li>The PCs, games and settings you enter are worked out in your browser. They are not sent to us.</li>
+      <li>We have no accounts, we do not ask for your name or email, and we do not run analytics.</li>
+      <li>Google Fonts and Google ads load only if you allow them in the cookie settings.</li>
+      <li>Links to shops take you to other websites with their own policies.</li>
+    </ul>
+
+    <h3>What is stored on your device</h3>
+    <p>The Site uses your browser's local storage and, if you allow advertising, cookies. We treat the first four items below as necessary: they exist only to make features you use work, so they are on without a prompt.</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th scope="col">Name</th><th scope="col">Purpose</th><th scope="col">Set by</th><th scope="col">How long</th></tr></thead>
+      <tbody>
+        <tr><td>framecheck-v1</td><td>Your PC, chosen game, settings and saved PCs</td><td>This Site</td><td>Until you clear your browser data</td></tr>
+        <tr><td>framecheck-bench-v1</td><td>The benchmark results you log</td><td>This Site</td><td>Until you clear your browser data</td></tr>
+        <tr><td>fc-theme</td><td>Your light or dark theme</td><td>This Site</td><td>Until you clear your browser data</td></tr>
+        <tr><td>fc-consent-v1</td><td>Your choices in the cookie banner and when you made them</td><td>This Site</td><td>12 months, then we ask again</td></tr>
+        <tr><td>__gads, __gpi, __eoi and cookies on Google domains</td><td>Show, limit, measure and personalize ads. Only if you allow advertising.</td><td>Google AdSense</td><td>Set by Google</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>What our hosting provider sees</h3>
+    <p>When you load the Site, our hosting provider's servers receive your IP address, your browser and device type, the page you asked for and the time. Every website works this way. We rely on it to deliver and secure the Site, and the provider keeps it for its own limited retention period.</p>
+
+    <h3>Third parties, only with your permission</h3>
+    <ul>
+      <li><strong>Google Fonts.</strong> If you allow it, your browser downloads the Site's fonts from Google. Google receives your IP address and browser details when it does.</li>
+      <li><strong>Google AdSense.</strong> If you allow advertising, Google and its ad partners may use cookies, device identifiers and your IP address to show ads, limit how often you see them, measure them and, depending on your Google settings, personalize them. Read <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener noreferrer">how Google uses data from sites that use its services</a> and manage <a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer">your Google ad settings</a>.</li>
+    </ul>
+    <p>If you do not allow these, your browser does not contact Google when you use the Site.</p>
+
+    <h3>Links to shops and other sites</h3>
+    <p>Buy links and partner links lead to sites we do not control, such as Amazon, Newegg, PCPartPicker and Micro Center. When you click one, that site learns you came from us, may set its own cookies, including to credit us with a commission, and handles your data under its own policy. We mark these as affiliate or referral links.</p>
+
+    <h3>Why we use information, and our legal bases</h3>
+    <ul>
+      <li>To run the calculator and remember your choices: this is what you asked the Site to do.</li>
+      <li>To deliver and secure the Site (server logs): our legitimate interest in a working, safe website.</li>
+      <li>To load Google Fonts and show ads: your consent, which you can withdraw at any time.</li>
+    </ul>
+    <p>If you are in the European Economic Area, the United Kingdom or Switzerland, these are the legal bases we rely on under the GDPR and UK GDPR. Withdrawing consent does not affect what happened before you withdrew it.</p>
+
+    <h3>Selling and sharing</h3>
+    <p>We do not sell your personal information for money, and we do not collect it ourselves beyond the server logs described above. If you allow advertising, some laws, including California's, treat Google's use of cookies and identifiers for advertising as "sharing" or "sale" of personal information for cross-context behavioral advertising. Advertising is off by default, and you can turn it off at any time in the cookie settings. We also treat a Global Privacy Control signal from your browser as a request not to share, so advertising stays off unless you switch it on yourself in the cookie settings.</p>
+
+    <h3>Your choices and rights</h3>
+    <ul>
+      <li>Change your cookie choices at any time with "Cookie settings and your privacy choices" in the footer.</li>
+      <li>Delete the data on your device by clearing this site's data in your browser settings.</li>
+      <li>Turn on Global Privacy Control, or block third-party cookies, in your browser.</li>
+    </ul>
+    <p>Depending on where you live, you may have the right to access, correct, delete, restrict or object to the use of your personal information, to receive a copy of it, to opt out of its sale or sharing, and to withdraw consent, and not to be treated worse for using these rights. You may also complain to your data protection authority. We hold almost no personal information about you, because your calculator data stays in your browser, but you can write to <span data-fill="email" class="ph">[your email address]</span> and we will respond within the time the law requires.</p>
+
+    <h3>Children</h3>
+    <p>The Site is not directed to children under 13, or under 16 where local law sets a higher age, and we do not knowingly collect personal information from them. If you believe a child has given us personal information, contact us and we will delete it.</p>
+
+    <h3>International transfers</h3>
+    <p>Google and our hosting provider may process data in the United States and other countries. They are responsible for the safeguards that apply to those transfers.</p>
+
+    <h3>Changes</h3>
+    <p>We may update this policy. The effective date above shows the latest version. If a change affects the cookies or third parties we use, we will ask for your choices again.</p>
+
+    <h3>Contact</h3>
+    <p><span data-fill="operator" class="ph">[your name or company]</span>, <span data-fill="email" class="ph">[your email address]</span></p>
+  </div>
+</dialog>
+
+<dialog class="legal" id="dlg-terms" aria-labelledby="dlgTermsT">
+  <div class="legal-head"><h2 id="dlgTermsT">Terms of use</h2><button type="button" class="btn alt" data-close>Close</button></div>
+  <div class="legal-body">
+    <p class="dimtxt">Effective <span data-fill="effective" class="ph">[date]</span></p>
+
+    <h3>1. Agreement</h3>
+    <p>These terms govern your use of FrameCheck (the "Site"), run by <span data-fill="operator" class="ph">[your name or company]</span> ("we", "us"). By using the Site you agree to them and to our <a href="#privacy">privacy policy</a>. If you do not agree, please do not use the Site.</p>
+
+    <h3>2. What the Site does</h3>
+    <p>The Site estimates game frame rates, and suggests upgrades, settings, builds, power supply sizes, storage sizes and temperatures. It is for general information and entertainment.</p>
+
+    <h3>3. Estimates are not guarantees</h3>
+    <p>Every number on the Site comes from a model, not from measuring your PC. Real results vary with drivers, game patches, settings, cooling, background software and differences between individual parts, and can be far from our estimates. Prices are rough guides, not live prices. The Site does not check every compatibility issue, for example whether a graphics card fits in your case. Verify anything that matters with the manufacturer or seller before you buy or build.</p>
+
+    <h3>4. Safety and your own decisions</h3>
+    <p>Building, upgrading or modifying a PC carries risks, including electric shock, injury, damaged components, voided warranties and lost data. Our power supply and temperature results are rough guides, not engineering specifications or safety advice. Follow the manufacturers' instructions, back up your data, and ask a qualified technician if you are unsure. You are responsible for what you buy and how you install it.</p>
+
+    <h3>5. Third-party sites, products and affiliate links</h3>
+    <p>The Site links to shops and other sites we do not control. We are not responsible for their content, prices, availability, products or policies, and any purchase is a transaction between you and the seller. We may earn a commission on some links, as explained in the <a href="#disclosures">disclosures</a>.</p>
+
+    <h3>6. Acceptable use</h3>
+    <p>Do not use the Site unlawfully, disrupt or overload it, get around its technical protections, or copy or republish its data or code at scale without our written permission.</p>
+
+    <h3>7. Ownership and trademarks</h3>
+    <p>The Site's design, code, text and data belong to us or our licensors. You may use the Site for your own personal, non-commercial purposes. Product, game and company names belong to their owners, and we are not affiliated with, endorsed by or sponsored by them.</p>
+
+    <h3>8. No warranties</h3>
+    <p>The Site is provided "as is" and "as available". To the fullest extent the law allows, we make no warranties of any kind, express or implied, including about accuracy, merchantability, fitness for a particular purpose, non-infringement, or uninterrupted or error-free operation.</p>
+
+    <h3>9. Limit on our liability</h3>
+    <p>To the fullest extent the law allows, we are not liable for any indirect, incidental, special, consequential, exemplary or punitive damages, or for lost profits, data or goodwill, or for damage to hardware or for purchase decisions, arising from your use of or reliance on the Site. Our total liability for all claims relating to the Site will not exceed US $100. Nothing in these terms limits liability that cannot be limited by law, including liability for fraud, or rights you have as a consumer that cannot be waived.</p>
+
+    <h3>10. Governing law</h3>
+    <p>These terms are governed by the laws of <span data-fill="jurisdiction" class="ph">[your state or country]</span>, without regard to conflict-of-law rules, and the courts there have jurisdiction over disputes, except where mandatory consumer law lets you bring a claim in the courts where you live.</p>
+
+    <h3>11. Changes</h3>
+    <p>We may change these terms or the Site, or stop offering the Site, at any time. The effective date above shows the latest version, and continuing to use the Site after a change means you accept it.</p>
+
+    <h3>12. General</h3>
+    <p>If part of these terms is found unenforceable, the rest stays in effect. These terms and the privacy policy are the whole agreement between you and us about the Site.</p>
+
+    <h3>13. Contact</h3>
+    <p><span data-fill="operator" class="ph">[your name or company]</span>, <span data-fill="email" class="ph">[your email address]</span></p>
+  </div>
+</dialog>
+
+<dialog class="legal" id="dlg-disclosures" aria-labelledby="dlgDiscT">
+  <div class="legal-head"><h2 id="dlgDiscT">Disclosures and accessibility</h2><button type="button" class="btn alt" data-close>Close</button></div>
+  <div class="legal-body">
+    <p class="dimtxt">Effective <span data-fill="effective" class="ph">[date]</span></p>
+
+    <h3>Affiliate and referral links</h3>
+    <p>Some links on this Site are affiliate or referral links. If you click one and buy something, we may earn a commission at no extra cost to you. Buy links are labeled as affiliate links, partner cards are labeled "Referral", and the links carry a "sponsored" tag for search engines. The upgrade ranking is calculated from estimated frame rate gained per dollar and does not depend on who pays us.</p>
+    <p class="amz" hidden>As an Amazon Associate I earn from qualifying purchases.</p>
+
+    <h3>Advertising</h3>
+    <p>If you allow advertising, the Site shows ads served by Google AdSense. We do not choose the individual ads, and ads never change the estimates or the upgrade ranking. Ad spaces are labeled.</p>
+
+    <h3>Estimates and accuracy</h3>
+    <p>Frame rates, upgrade gains, temperatures, power draw and prices are estimates from our model, not measurements or promises. See the <a href="#terms">terms of use</a> for the details, and check with the manufacturer or seller before you spend money.</p>
+
+    <h3>Trademarks</h3>
+    <p>Product, game and company names are trademarks of their owners. We use them only to identify the products we discuss. The Site is not affiliated with, endorsed by or sponsored by those owners.</p>
+
+    <h3>Accessibility</h3>
+    <p>We want everyone to be able to use the Site, and we are working toward the Web Content Accessibility Guidelines (WCAG) 2.2 level AA. The Site is designed to work with a keyboard and respects your device's theme and reduced-motion settings. If something does not work for you, write to <span data-fill="email" class="ph">[your email address]</span> with the page and what went wrong, and we will try to fix it or offer another way to get the information.</p>
+  </div>
+</dialog>
+
 
 <div class="toast" id="toast" role="status"></div>
 <noscript><div class="wrap"><p>FrameCheck needs JavaScript to run the calculator.</p></div></noscript>
@@ -616,14 +836,22 @@ details p{margin:10px 0 0;max-width:68ch;color:var(--dim)}
 /* =====================================================================
    CONFIG: edit these before launch.
    - adsense.client: your AdSense publisher id (e.g. 'ca-pub-1234567890123456').
-     Leave '' to show labeled placeholder boxes. Real ads only load when the
+     Leave '' to show labeled placeholder boxes. With an id but no slot id, the box stays hidden and Auto ads (set up in AdSense) places ads. Real ads only load when the
      page is hosted on your own domain (the sandbox blocks the ad script).
    - affiliate: link templates. {q} is replaced with the URL-encoded part name.
      Swap in your own tracking parameters or network deep links.
    - partners: referral cards shown in the "Where to buy and build" section.
+   - legal: fill these in once. They appear in the privacy policy, terms and footer.
+     Until you do, the gaps show as yellow [placeholders] on the page.
    ===================================================================== */
 const CONFIG = {
-  adsense: { client: '', slots: { top: '', inline: '', side: '', bottom: '' } },
+  legal: {
+    operator: '',       // your name or company, e.g. 'Jane Doe' or 'Acme Tools LLC, 123 Main St, City'
+    email: '',          // a mailbox you actually read, for privacy and legal requests
+    jurisdiction: '',   // whose law governs the terms, e.g. 'the State of California, USA'
+    effective: 'September 19, 2026'   // update when you change the policy or terms
+  },
+  adsense: { client: 'ca-pub-9530629621333099', slots: { top: '', inline: '', side: '', bottom: '' } },
   affiliate: [
     { label: 'Amazon', url: 'https://www.amazon.com/s?k={q}&tag=YOURTAG-20' },
     { label: 'Newegg', url: 'https://www.newegg.com/p/pl?d={q}' }
@@ -846,20 +1074,98 @@ function buyLinks(q, name) {
   const enc = encodeURIComponent(q);
   return CONFIG.affiliate.map((a, i) =>
     `<a class="buy${i ? ' alt' : ''}" href="${esc(a.url.replace('{q}', enc))}" target="_blank" rel="sponsored noopener noreferrer" aria-label="Check the price of ${esc(name)} at ${esc(a.label)}">${esc(a.label)}</a>`
-  ).join('');
+  ).join('') + '<span class="affnote">affiliate links</span>';
 }
 
-/* ---------- ads ---------- */
+/* ---------- consent, fonts and ads ---------- */
+/* Nothing from Google loads until the visitor allows it. The choice is kept
+   in localStorage for 12 months. Bump CONSENT_VERSION if you add a new kind
+   of cookie or third party, so everyone is asked again. */
+const CONSENT_KEY = 'fc-consent-v1', CONSENT_VERSION = 1, CONSENT_DAYS = 365;
+const FONT_URL = 'https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Instrument+Sans:wght@400;500;600;700&display=swap';
+let consent = readConsent(), adsLoaded = false, fontsLoaded = false;
+
+function readConsent() {
+  try {
+    const c = JSON.parse(localStorage.getItem(CONSENT_KEY) || 'null');
+    if (c && c.v === CONSENT_VERSION && typeof c.ts === 'number' && Date.now() - c.ts < CONSENT_DAYS * 864e5) return { fonts: !!c.fonts, ads: !!c.ads };
+  } catch (e) {}
+  return null;
+}
+function storeConsent(c) {
+  try { localStorage.setItem(CONSENT_KEY, JSON.stringify({ v: CONSENT_VERSION, ts: Date.now(), fonts: c.fonts, ads: c.ads })); } catch (e) {}
+}
+function loadFonts() {
+  if (fontsLoaded) return;
+  fontsLoaded = true;
+  const l = document.createElement('link');
+  l.rel = 'stylesheet'; l.href = FONT_URL;
+  document.head.appendChild(l);
+}
+/* AdSense writes first-party cookies on your own domain. Remove them when advertising is off. */
+function clearAdCookies() {
+  const parts = location.hostname.split('.'), doms = [''];
+  for (let i = 0; i < parts.length - 1; i++) doms.push('.' + parts.slice(i).join('.'));
+  ['__gads', '__gpi', '__eoi'].forEach(n => doms.forEach(d => {
+    document.cookie = n + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/' + (d ? '; domain=' + d : '');
+  }));
+}
+function applyConsent() {
+  if (consent.fonts) loadFonts();
+  if (!consent.ads) {
+    clearAdCookies();
+    if (adsLoaded) { location.reload(); return; }   /* the ad script cannot be unloaded, so start clean */
+  }
+  initAds();
+}
+function initConsent() {
+  const box = $('#cc'), prefs = $('#ccPrefs'), custom = $('#ccCustom'), fonts = $('#ccFonts'), ads = $('#ccAds');
+  let opener = null;
+  const showPrefs = on => {
+    prefs.hidden = !on;
+    custom.textContent = on ? 'Save choices' : 'Customize';
+    custom.classList.toggle('alt', !on);
+    custom.setAttribute('aria-expanded', String(on));
+  };
+  const save = c => {
+    consent = { fonts: !!c.fonts, ads: !!c.ads };
+    storeConsent(consent);
+    box.hidden = true;
+    toast('Privacy choices saved');
+    if (opener) { opener.focus(); opener = null; }
+    applyConsent();
+  };
+  $('#ccAccept').addEventListener('click', () => save({ fonts: true, ads: true }));
+  $('#ccReject').addEventListener('click', () => save({ fonts: false, ads: false }));
+  custom.addEventListener('click', () => { if (prefs.hidden) showPrefs(true); else save({ fonts: fonts.checked, ads: ads.checked }); });
+  $('#ccReopen').addEventListener('click', e => {
+    opener = e.currentTarget;
+    fonts.checked = !!(consent && consent.fonts);
+    ads.checked = !!(consent && consent.ads);
+    showPrefs(true);
+    box.hidden = false;
+    $('#ccTitle').focus();
+  });
+  if (consent) applyConsent();
+  else { showPrefs(false); box.hidden = false; initAds(); }
+}
+
 function initAds() {
-  const client = CONFIG.adsense.client;
-  if (client) {
+  const client = CONFIG.adsense.client, on = !!(consent && consent.ads), slots = $$('.ad[data-ad]');
+  if (client && !on) { slots.forEach(el => { el.hidden = true; }); return; }
+  if (client && !adsLoaded) {
+    adsLoaded = true;
     const s = document.createElement('script');
     s.async = true; s.crossOrigin = 'anonymous';
     s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + encodeURIComponent(client);
     document.head.appendChild(s);
   }
-  $$('.ad[data-ad]').forEach(el => {
+  slots.forEach(el => {
+    el.hidden = false;
+    if (el.dataset.ready) return;
+    el.dataset.ready = '1';
     const slot = CONFIG.adsense.slots[el.dataset.ad];
+    if (client && !slot) { el.hidden = true; return; }
     if (client && slot) {
       el.innerHTML = `<ins class="adsbygoogle" style="display:block;width:100%" data-ad-client="${esc(client)}" data-ad-slot="${esc(slot)}" data-ad-format="auto" data-full-width-responsive="true"></ins>`;
       try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
@@ -867,6 +1173,39 @@ function initAds() {
       el.innerHTML = `<div><small>Advertisement</small>Ad space, ${esc(el.dataset.size || '')}</div>`;
     }
   });
+}
+
+/* ---------- legal pages ---------- */
+function initLegal() {
+  const L = CONFIG.legal, docs = ['privacy', 'terms', 'disclosures'], dlg = id => $('#dlg-' + id);
+  $$('[data-fill]').forEach(el => {
+    const key = el.dataset.fill, v = L[key];
+    if (!v) return;
+    if (key === 'email') {
+      const a = document.createElement('a');
+      a.href = 'mailto:' + v; a.textContent = v;
+      el.replaceWith(a);
+    } else { el.textContent = v; el.classList.remove('ph'); }
+  });
+  $$('[data-year]').forEach(el => { el.textContent = new Date().getFullYear(); });
+  /* The Amazon Associates statement only appears once a real Amazon tag is in CONFIG. */
+  const amazon = CONFIG.affiliate.concat(CONFIG.partners).some(x => /amazon\./.test(x.url) && !/YOURTAG/.test(x.url));
+  $$('.amz').forEach(el => { el.hidden = !amazon; });
+  const sync = () => {
+    const id = location.hash.slice(1);
+    docs.forEach(d => { if (d !== id && dlg(d).open) dlg(d).close(); });
+    if (docs.includes(id) && !dlg(id).open) dlg(id).showModal();
+  };
+  docs.forEach(d => {
+    const el = dlg(d);
+    el.addEventListener('close', () => { if (location.hash.slice(1) === d) history.replaceState(null, '', location.pathname + location.search); });
+    el.addEventListener('click', e => {
+      const r = el.getBoundingClientRect(), outside = e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
+      if (outside || e.target.closest('[data-close]')) el.close();
+    });
+  });
+  window.addEventListener('hashchange', sync);
+  sync();
 }
 
 /* ---------- inputs ---------- */
@@ -1773,7 +2112,8 @@ function render() {
   renderHeat(ctx);
 }
 
-initAds();
+initConsent();
+initLegal();
 initInputs();
 initExtras();
 render();
