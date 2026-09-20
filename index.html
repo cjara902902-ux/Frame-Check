@@ -317,6 +317,24 @@ body:has(dialog[open]){overflow:hidden}
   .cc{left:8px;right:8px;bottom:8px;width:auto;padding:16px}
   .legal-head,.legal-body{padding-left:16px;padding-right:16px}
 }
+
+/* ---- PC builder simulator ---- */
+.pcb-presets{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px}
+.pcb-presets .btn{font-size:14px;padding:8px 12px}
+.pcb-grid{display:block}
+.pcb-parts{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px 18px;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:18px;margin-bottom:20px}
+.pcb-row2{display:contents}
+.pcb-hint{color:var(--dim);font-size:13px;line-height:1.35}
+.pcb-verdict{display:flex;gap:10px;align-items:center;padding:12px 16px;border-radius:10px;border:1.5px solid var(--c);background:color-mix(in srgb,var(--c) 10%,var(--surface));font-weight:700}
+.pcb-verdict span:first-child{color:var(--c);font-size:20px;font-weight:900}
+.meter{margin:14px 0}
+.meter-h{display:flex;justify-content:space-between;gap:12px;font-size:14px;margin-bottom:6px}
+.meter-h strong{font-variant-numeric:tabular-nums;text-align:right;color:var(--c)}
+.meter-track{height:12px;border-radius:99px;background:var(--surface2);border:1px solid var(--line);overflow:hidden}
+.meter-track i{display:block;height:100%;border-radius:99px;background:var(--c)}
+.chk .bad{color:var(--bad);font-weight:800}
+.chk .info{color:var(--link);font-weight:800}
+.pcb-fix{font-size:13px;padding:4px 10px;margin-left:6px}
 </style>
 </head>
 <body>
@@ -363,6 +381,7 @@ body:has(dialog[open]){overflow:hidden}
       <a href="#power">Power</a>
       <a href="#storage">Storage</a>
       <a href="#build">Build</a>
+      <a href="#pcbuilder">PC builder</a>
       <a href="#bench">Benchmarks</a>
       <a href="#assistant">Ask</a>
       <a href="#faq">How it works</a>
@@ -597,6 +616,16 @@ body:has(dialog[open]){overflow:hidden}
         <div id="bldOut"></div>
       </section>
 
+      <section class="section" id="pcbuilder" aria-labelledby="pcbTitle">
+        <h2 id="pcbTitle">PC builder simulator</h2>
+        <p class="sub">Pick real cases and parts, and the simulator checks what a parts store would warn you about: socket, DDR3 versus DDR4 versus DDR5, board and case size, graphics card and cooler clearance, power supply and PCIe lanes. It also estimates FPS and temperatures for the game you have selected, and shows how memory speed and single or dual channel change the result. Case sizes come from the makers' listings and everything else is a typical value, so confirm the exact models before you buy.</p>
+        <div class="pcb-presets" id="pcbPresets" role="group" aria-label="Starter builds"></div>
+        <div class="pcb-grid">
+          <div class="pcb-parts" id="pcbParts"></div>
+          <div id="pcbOut"></div>
+        </div>
+      </section>
+
       <section class="section" id="bench" aria-labelledby="benTitle">
         <h2 id="benTitle">Benchmark log</h2>
         <p class="sub">Ran the game yourself? Log your real average FPS for the PC and game selected at the top, and see how far the estimate was off. Results are saved in this browser only.</p>
@@ -653,7 +682,7 @@ body:has(dialog[open]){overflow:hidden}
         <details><summary>Why does my CPU matter as much as my GPU?</summary><p>Every frame needs both chips. The graphics card draws it, the processor prepares it. Whichever is slower sets your ceiling. If the CPU is the limit, a faster graphics card will barely change your frame rate, and the advisor will say so.</p></details>
         <details><summary>What does the upscaling switch do?</summary><p>DLSS, FSR and XeSS render the game at a lower internal resolution and rebuild the image. On Quality mode that typically lifts frame rate by 20 to 45 percent depending on resolution. It helps most when your graphics card is the limit.</p></details>
         <details><summary>How does this site make money?</summary><p>From ads and from affiliate and referral links to shops. The upgrade ranking is calculated from estimated frame rate gained per dollar and does not depend on who pays us. Prices are rough guides, so always check the current price with the shop.</p></details>
-        <details><summary>How does Build my PC choose parts?</summary><p>It tries every processor and graphics card pairing we can price, adds the motherboard, memory, storage, power supply, case and cooler each one needs, and drops anything over your budget. Of what is left it picks the build with the highest average estimated FPS across all the games at your resolution on High settings. It checks the socket, memory type, power supply size and cooler. It does not check graphics card length against the case.</p></details>
+        <details><summary>How does Build my PC choose parts?</summary><p>It tries every processor and graphics card pairing we can price, adds the motherboard, memory, storage, power supply, case and cooler each one needs, and drops anything over your budget. Of what is left it picks the build with the highest average estimated FPS across all the games at your resolution on High settings. It checks the socket, memory type, power supply size and cooler. For a full check of graphics card length, cooler clearance and case fit, use the PC builder simulator.</p></details>
         <details><summary>Where do benchmark results and leaderboards come from?</summary><p>Results you log are stored in your own browser and never leave your device, so the highest-FPS table only shows your results. The best-PC-by-budget table is calculated by the same model as everything else, not submitted by other people. A shared database of real results needs a server, which this page does not have yet.</p></details>
         <details><summary>Is the assistant an AI?</summary><p>No. It is a set of rules that recognises a handful of question types, such as upgrades within a budget, low FPS in a game, whether a part will work, and builds, and answers them from the same data as the rest of the page. It does not use a language model and cannot answer questions outside that.</p></details>
         <details><summary>My hardware is not in the list</summary><p>Choose the closest model. Cards within the same family, such as an RTX 3060 and an RTX 3060 Ti, differ a lot, so pick carefully.</p></details>
@@ -678,16 +707,16 @@ body:has(dialog[open]){overflow:hidden}
   </nav>
   <p><strong>Affiliate disclosure.</strong> Some links on this site are affiliate or referral links. If you buy through them we may earn a commission at no extra cost to you. Ads are labeled and never change the estimates or the upgrade ranking. <span class="amz" hidden>As an Amazon Associate I earn from qualifying purchases.</span></p>
   <p>FPS figures, temperatures, power draw and prices are estimates for guidance only, not measurements or guarantees. Prices are rough US dollar guides and change often. Check compatibility, power supply capacity and case clearance before buying any part, and follow the manufacturer's instructions when you install it. Product names are trademarks of their owners, and this site is not affiliated with them.</p>
-  <p>&copy; <span data-year>2026</span> <span data-fill="operator" class="ph">[your name or company]</span>. Use of this site is subject to the <a href="#terms">terms of use</a> and <a href="#privacy">privacy policy</a>.</p>
+  <p>&copy; <span data-year>2026</span> <span data-lg="operator" class="ph">[your name or company]</span>. Use of this site is subject to the <a href="#terms">terms of use</a> and <a href="#privacy">privacy policy</a>.</p>
 </footer>
 
 <dialog class="legal" id="dlg-privacy" aria-labelledby="dlgPrivacyT">
   <div class="legal-head"><h2 id="dlgPrivacyT">Privacy and cookie policy</h2><button type="button" class="btn alt" data-close>Close</button></div>
   <div class="legal-body">
-    <p class="dimtxt">Effective <span data-fill="effective" class="ph">[date]</span></p>
+    <p class="dimtxt">Effective <span data-lg="effective" class="ph">[date]</span></p>
 
     <h3>Who we are</h3>
-    <p>This website, FrameCheck (the "Site"), is run by <span data-fill="operator" class="ph">[your name or company]</span>. For privacy questions or requests, write to <span data-fill="email" class="ph">[your email address]</span>.</p>
+    <p>This website, FrameCheck (the "Site"), is run by <span data-lg="operator" class="ph">[your name or company]</span>. For privacy questions or requests, write to <span data-lg="email" class="ph">[your email address]</span>.</p>
 
     <h3>The short version</h3>
     <ul>
@@ -740,7 +769,7 @@ body:has(dialog[open]){overflow:hidden}
       <li>Delete the data on your device by clearing this site's data in your browser settings.</li>
       <li>Turn on Global Privacy Control, or block third-party cookies, in your browser.</li>
     </ul>
-    <p>Depending on where you live, you may have the right to access, correct, delete, restrict or object to the use of your personal information, to receive a copy of it, to opt out of its sale or sharing, and to withdraw consent, and not to be treated worse for using these rights. You may also complain to your data protection authority. We hold almost no personal information about you, because your calculator data stays in your browser, but you can write to <span data-fill="email" class="ph">[your email address]</span> and we will respond within the time the law requires.</p>
+    <p>Depending on where you live, you may have the right to access, correct, delete, restrict or object to the use of your personal information, to receive a copy of it, to opt out of its sale or sharing, and to withdraw consent, and not to be treated worse for using these rights. You may also complain to your data protection authority. We hold almost no personal information about you, because your calculator data stays in your browser, but you can write to <span data-lg="email" class="ph">[your email address]</span> and we will respond within the time the law requires.</p>
 
     <h3>Children</h3>
     <p>The Site is not directed to children under 13, or under 16 where local law sets a higher age, and we do not knowingly collect personal information from them. If you believe a child has given us personal information, contact us and we will delete it.</p>
@@ -752,23 +781,23 @@ body:has(dialog[open]){overflow:hidden}
     <p>We may update this policy. The effective date above shows the latest version. If a change affects the cookies or third parties we use, we will ask for your choices again.</p>
 
     <h3>Contact</h3>
-    <p><span data-fill="operator" class="ph">[your name or company]</span>, <span data-fill="email" class="ph">[your email address]</span></p>
+    <p><span data-lg="operator" class="ph">[your name or company]</span>, <span data-lg="email" class="ph">[your email address]</span></p>
   </div>
 </dialog>
 
 <dialog class="legal" id="dlg-terms" aria-labelledby="dlgTermsT">
   <div class="legal-head"><h2 id="dlgTermsT">Terms of use</h2><button type="button" class="btn alt" data-close>Close</button></div>
   <div class="legal-body">
-    <p class="dimtxt">Effective <span data-fill="effective" class="ph">[date]</span></p>
+    <p class="dimtxt">Effective <span data-lg="effective" class="ph">[date]</span></p>
 
     <h3>1. Agreement</h3>
-    <p>These terms govern your use of FrameCheck (the "Site"), run by <span data-fill="operator" class="ph">[your name or company]</span> ("we", "us"). By using the Site you agree to them and to our <a href="#privacy">privacy policy</a>. If you do not agree, please do not use the Site.</p>
+    <p>These terms govern your use of FrameCheck (the "Site"), run by <span data-lg="operator" class="ph">[your name or company]</span> ("we", "us"). By using the Site you agree to them and to our <a href="#privacy">privacy policy</a>. If you do not agree, please do not use the Site.</p>
 
     <h3>2. What the Site does</h3>
     <p>The Site estimates game frame rates, and suggests upgrades, settings, builds, power supply sizes, storage sizes and temperatures. It is for general information and entertainment.</p>
 
     <h3>3. Estimates are not guarantees</h3>
-    <p>Every number on the Site comes from a model, not from measuring your PC. Real results vary with drivers, game patches, settings, cooling, background software and differences between individual parts, and can be far from our estimates. Prices are rough guides, not live prices. The Site does not check every compatibility issue, for example whether a graphics card fits in your case. Verify anything that matters with the manufacturer or seller before you buy or build.</p>
+    <p>Every number on the Site comes from a model, not from measuring your PC. Real results vary with drivers, game patches, settings, cooling, background software and differences between individual parts, and can be far from our estimates. Prices are rough guides, not live prices. The Site's compatibility checks are not exhaustive and use typical part sizes, so a specific graphics card, cooler or board may not fit your case even when the Site says it does. Verify anything that matters with the manufacturer or seller before you buy or build.</p>
 
     <h3>4. Safety and your own decisions</h3>
     <p>Building, upgrading or modifying a PC carries risks, including electric shock, injury, damaged components, voided warranties and lost data. Our power supply and temperature results are rough guides, not engineering specifications or safety advice. Follow the manufacturers' instructions, back up your data, and ask a qualified technician if you are unsure. You are responsible for what you buy and how you install it.</p>
@@ -789,7 +818,7 @@ body:has(dialog[open]){overflow:hidden}
     <p>To the fullest extent the law allows, we are not liable for any indirect, incidental, special, consequential, exemplary or punitive damages, or for lost profits, data or goodwill, or for damage to hardware or for purchase decisions, arising from your use of or reliance on the Site. Our total liability for all claims relating to the Site will not exceed US $100. Nothing in these terms limits liability that cannot be limited by law, including liability for fraud, or rights you have as a consumer that cannot be waived.</p>
 
     <h3>10. Governing law</h3>
-    <p>These terms are governed by the laws of <span data-fill="jurisdiction" class="ph">[your state or country]</span>, without regard to conflict-of-law rules, and the courts there have jurisdiction over disputes, except where mandatory consumer law lets you bring a claim in the courts where you live.</p>
+    <p>These terms are governed by the laws of <span data-lg="jurisdiction" class="ph">[your state or country]</span>, without regard to conflict-of-law rules, and the courts there have jurisdiction over disputes, except where mandatory consumer law lets you bring a claim in the courts where you live.</p>
 
     <h3>11. Changes</h3>
     <p>We may change these terms or the Site, or stop offering the Site, at any time. The effective date above shows the latest version, and continuing to use the Site after a change means you accept it.</p>
@@ -798,14 +827,14 @@ body:has(dialog[open]){overflow:hidden}
     <p>If part of these terms is found unenforceable, the rest stays in effect. These terms and the privacy policy are the whole agreement between you and us about the Site.</p>
 
     <h3>13. Contact</h3>
-    <p><span data-fill="operator" class="ph">[your name or company]</span>, <span data-fill="email" class="ph">[your email address]</span></p>
+    <p><span data-lg="operator" class="ph">[your name or company]</span>, <span data-lg="email" class="ph">[your email address]</span></p>
   </div>
 </dialog>
 
 <dialog class="legal" id="dlg-disclosures" aria-labelledby="dlgDiscT">
   <div class="legal-head"><h2 id="dlgDiscT">Disclosures and accessibility</h2><button type="button" class="btn alt" data-close>Close</button></div>
   <div class="legal-body">
-    <p class="dimtxt">Effective <span data-fill="effective" class="ph">[date]</span></p>
+    <p class="dimtxt">Effective <span data-lg="effective" class="ph">[date]</span></p>
 
     <h3>Affiliate and referral links</h3>
     <p>Some links on this Site are affiliate or referral links. If you click one and buy something, we may earn a commission at no extra cost to you. Buy links are labeled as affiliate links, partner cards are labeled "Referral", and the links carry a "sponsored" tag for search engines. The upgrade ranking is calculated from estimated frame rate gained per dollar and does not depend on who pays us.</p>
@@ -821,7 +850,7 @@ body:has(dialog[open]){overflow:hidden}
     <p>Product, game and company names are trademarks of their owners. We use them only to identify the products we discuss. The Site is not affiliated with, endorsed by or sponsored by those owners.</p>
 
     <h3>Accessibility</h3>
-    <p>We want everyone to be able to use the Site, and we are working toward the Web Content Accessibility Guidelines (WCAG) 2.2 level AA. The Site is designed to work with a keyboard and respects your device's theme and reduced-motion settings. If something does not work for you, write to <span data-fill="email" class="ph">[your email address]</span> with the page and what went wrong, and we will try to fix it or offer another way to get the information.</p>
+    <p>We want everyone to be able to use the Site, and we are working toward the Web Content Accessibility Guidelines (WCAG) 2.2 level AA. The Site is designed to work with a keyboard and respects your device's theme and reduced-motion settings. If something does not work for you, write to <span data-lg="email" class="ph">[your email address]</span> with the page and what went wrong, and we will try to fix it or offer another way to get the information.</p>
   </div>
 </dialog>
 
@@ -887,7 +916,18 @@ const CPUS = [
   ['Core i5-12400F',125,'LGA1700'],['Core i5-12600K',150,'LGA1700'],['Core i7-12700K',170,'LGA1700'],
   ['Core i5-13400F',140,'LGA1700'],['Core i5-14400F',145,'LGA1700'],['Core i5-13600K',180,'LGA1700'],['Core i5-14600K',190,'LGA1700'],
   ['Core i7-13700K',205,'LGA1700'],['Core i7-14700K',215,'LGA1700'],['Core i9-13900K',225,'LGA1700'],['Core i9-14900K',235,'LGA1700'],
-  ['Core Ultra 5 245K',190,'LGA1851'],['Core Ultra 7 265K',215,'LGA1851'],['Core Ultra 9 285K',225,'LGA1851']
+  ['Core Ultra 5 245K',190,'LGA1851'],['Core Ultra 7 265K',215,'LGA1851'],['Core Ultra 9 285K',225,'LGA1851'],
+  ['Ryzen 3 3400G',76,'AM4'],['Ryzen 3 4100',88,'AM4'],['Ryzen 5 2600X',84,'AM4'],['Ryzen 7 2700X',90,'AM4'],['Ryzen 5 3600XT',106,'AM4'],
+  ['Ryzen 7 3800X',110,'AM4'],['Ryzen 9 3950X',113,'AM4'],['Ryzen 5 5600G',126,'AM4'],['Ryzen 5 5600GT',124,'AM4'],['Ryzen 7 5700G',132,'AM4'],
+  ['Ryzen 7 5700',140,'AM4'],['Ryzen 9 5900XT',162,'AM4'],
+  ['Ryzen 5 8400F',150,'AM5'],['Ryzen 5 8600G',158,'AM5'],['Ryzen 7 8700G',170,'AM5'],['Ryzen 5 9600',180,'AM5'],['Ryzen 9 7900',185,'AM5'],
+  ['Ryzen 5 7600X3D',215,'AM5'],['Ryzen 9 7950X',200,'AM5'],['Ryzen 9 9900X',200,'AM5'],['Ryzen 9 9950X',208,'AM5'],['Ryzen 9 7900X3D',225,'AM5'],['Ryzen 9 9900X3D',250,'AM5'],
+  ['Core i5-4460',54,'LGA1150'],['Core i7-4770K',69,'LGA1150'],
+  ['Core i3-7100',58,'LGA1151'],['Core i7-6700K',76,'LGA1151'],['Core i3-9100F',76,'LGA1151'],['Core i5-8600K',94,'LGA1151'],['Core i5-9600K',96,'LGA1151'],['Core i9-9900K',110,'LGA1151'],
+  ['Core i3-10105F',84,'LGA1200'],['Core i5-10500',102,'LGA1200'],['Core i7-10700',112,'LGA1200'],['Core i9-10900K',124,'LGA1200'],['Core i9-11900K',132,'LGA1200'],
+  ['Core i3-12100F',112,'LGA1700'],['Core i3-13100F',118,'LGA1700'],['Core i3-14100F',120,'LGA1700'],['Core i5-12600',135,'LGA1700'],['Core i5-13500',160,'LGA1700'],
+  ['Core i5-14500',165,'LGA1700'],['Core i7-12700',160,'LGA1700'],['Core i9-12900K',190,'LGA1700'],['Core i7-13700',195,'LGA1700'],['Core i7-14700',205,'LGA1700'],
+  ['Core Ultra 5 225',170,'LGA1851'],['Core Ultra 5 225F',170,'LGA1851']
 ].map(r => ({ name: r[0], i: r[1], s: r[2], keys: mkKeys(r[0]) }));
 
 /* name, performance index (GTX 1660 Super = 100), VRAM in GB */
@@ -908,7 +948,13 @@ const GPUS = [
   ['Radeon RX 7900 XT',375,20],['Radeon RX 7900 XTX',445,24],
   ['Radeon RX 9060 XT 8GB',232,8],['Radeon RX 9060 XT 16GB',235,16],['Radeon RX 9070',350,16],['Radeon RX 9070 XT',405,16],
   ['Intel Arc A580',118,8],['Intel Arc A750',138,8],['Intel Arc A770',155,16],['Intel Arc B570',175,10],['Intel Arc B580',195,12],
-  ['Integrated graphics (Vega 8 or UHD 630)',20,2],['Radeon 780M (integrated)',50,4]
+  ['Integrated graphics (Vega 8 or UHD 630)',20,2],['Radeon 780M (integrated)',50,4],
+  ['GeForce GTX 1050',38,2],['GeForce GTX 1060 3GB',62,3],['GeForce GTX 1070 Ti',130,8],['GeForce GTX 1630',42,4],['GeForce GTX 1650 GDDR6',60,4],
+  ['GeForce RTX 2070',148,8],['GeForce RTX 2080',168,8],['GeForce RTX 2080 Super',178,8],
+  ['GeForce RTX 3050 6GB',90,6],['GeForce RTX 3060 8GB',124,8],['GeForce RTX 3080 12GB',270,12],['GeForce RTX 3090 Ti',335,24],
+  ['GeForce RTX 4060 Ti 16GB',206,16],['GeForce RTX 4070 Ti',330,12],['GeForce RTX 4080',430,16],
+  ['Radeon RX 480',80,8],['Radeon RX 5700',148,8],['Radeon RX 6400',55,4],['Radeon RX 6700',195,10],['Radeon RX 6950 XT',350,16],
+  ['Radeon RX Vega 56',120,8],['Radeon RX Vega 64',135,8],['Radeon VII',165,16],['Intel Arc A380',52,6]
 ].map(r => ({ name: r[0], i: r[1], v: r[2], arc: /Intel Arc/.test(r[0]), keys: mkKeys(r[0]) }));
 
 /* id, name, group, GPU-bound FPS at 1080p High on a GTX 1660 Super,
@@ -939,7 +985,65 @@ const GAMES = [
   ['helldivers','Helldivers 2','Competitive and multiplayer',54,88,5,8,16,0],
   ['lol','League of Legends','Competitive and multiplayer',320,340,1.5,4,8,0],
   ['rocket','Rocket League','Competitive and multiplayer',210,300,2,4,8,0],
-  ['poe2','Path of Exile 2','Competitive and multiplayer',54,82,5,12,16,0]
+  ['poe2','Path of Exile 2','Competitive and multiplayer',54,82,5,12,16,0],
+  ['acmirage','Assassin\'s Creed Mirage','Single-player and open world',52,100,5,8,16,0],
+  ['acshadows','Assassin\'s Creed Shadows','Single-player and open world',30,62,7,16,16,0],
+  ['alanwake2','Alan Wake 2','Single-player and open world',24,80,8,16,16,0],
+  ['avatar','Avatar: Frontiers of Pandora','Single-player and open world',31,66,8,16,16,0],
+  ['deathstranding','Death Stranding: Director\'s Cut','Single-player and open world',84,165,5,8,16,0],
+  ['daysgone','Days Gone','Single-player and open world',62,115,4.5,8,16,0],
+  ['doometernal','Doom Eternal','Single-player and open world',128,240,4.5,8,16,0],
+  ['dyinglight2','Dying Light 2','Single-player and open world',40,85,6,8,16,0],
+  ['tsushima','Ghost of Tsushima Director\'s Cut','Single-player and open world',46,100,6,16,16,0],
+  ['gow','God of War (2018)','Single-player and open world',60,105,4.5,8,16,0],
+  ['gowr','God of War Ragnarök','Single-player and open world',48,90,6.5,16,16,0],
+  ['hzd','Horizon Zero Dawn Remastered','Single-player and open world',66,125,6,8,16,0],
+  ['hfw','Horizon Forbidden West','Single-player and open world',44,85,8,16,16,0],
+  ['tlou','The Last of Us Part I','Single-player and open world',32,80,9,16,16,0],
+  ['re4','Resident Evil 4 (2023)','Single-player and open world',68,130,8,16,16,0],
+  ['jedi','Star Wars Jedi: Survivor','Single-player and open world',32,68,8,16,16,0],
+  ['sh2','Silent Hill 2 (2024)','Single-player and open world',30,90,8,16,16,0],
+  ['stalker2','S.T.A.L.K.E.R. 2','Single-player and open world',24,55,8,16,16,0],
+  ['fallout4','Fallout 4','Single-player and open world',108,105,3.5,8,16,0],
+  ['skyrim','Skyrim Special Edition','Single-player and open world',170,170,2.5,8,8,60],
+  ['sims4','The Sims 4','Single-player and open world',190,200,2.5,8,8,0],
+  ['palworld','Palworld','Single-player and open world',66,88,6,16,16,0],
+  ['satisfactory','Satisfactory','Single-player and open world',58,95,5,8,16,0],
+  ['cities2','Cities: Skylines II','Single-player and open world',26,52,8,16,16,0],
+  ['msfs24','Microsoft Flight Simulator 2024','Single-player and open world',26,45,8,16,32,0],
+  ['ets2','Euro Truck Simulator 2','Single-player and open world',170,180,2.5,8,8,0],
+  ['civ6','Sid Meier\'s Civilization VI','Single-player and open world',92,120,3,8,16,0],
+  ['totalwar','Total War: Warhammer III','Single-player and open world',36,50,5,8,16,0],
+  ['aoe4','Age of Empires IV','Single-player and open world',62,78,4,8,16,0],
+  ['clair','Clair Obscur: Expedition 33','Single-player and open world',40,80,6,16,16,0],
+  ['kcd2','Kingdom Come: Deliverance II','Single-player and open world',40,82,7,16,16,0],
+  ['oblivion','The Elder Scrolls IV: Oblivion Remastered','Single-player and open world',28,58,8,16,16,0],
+  ['dota2','Dota 2','Competitive and multiplayer',220,215,2.5,8,8,0],
+  ['pubg','PUBG: Battlegrounds','Competitive and multiplayer',110,150,4.5,8,16,0],
+  ['rust','Rust','Competitive and multiplayer',62,95,5,8,16,0],
+  ['tarkov','Escape from Tarkov','Competitive and multiplayer',62,72,5,16,16,0],
+  ['deltaforce','Delta Force','Competitive and multiplayer',78,130,5,8,16,0],
+  ['destiny2','Destiny 2','Competitive and multiplayer',96,165,4,8,16,0],
+  ['thefinals','The Finals','Competitive and multiplayer',56,105,6,16,16,0],
+  ['halo','Halo Infinite','Competitive and multiplayer',56,120,5,8,16,0],
+  ['deadlock','Deadlock','Competitive and multiplayer',92,140,4,8,16,0],
+  ['roblox','Roblox','Competitive and multiplayer',230,260,1.5,4,8,0],
+  ['warframe','Warframe','Competitive and multiplayer',125,210,3,8,16,0],
+  ['wow','World of Warcraft: The War Within','Competitive and multiplayer',118,128,3.5,8,16,0],
+  ['diablo4','Diablo IV','Competitive and multiplayer',82,165,5,16,16,0],
+  ['bf2042','Battlefield 2042','Competitive and multiplayer',58,98,5,8,16,0],
+  ['fc25','EA Sports FC 25','Competitive and multiplayer',105,175,3.5,8,16,0],
+  ['nba2k25','NBA 2K25','Competitive and multiplayer',92,185,3.5,8,16,0],
+  ['forzamotorsport','Forza Motorsport (2023)','Competitive and multiplayer',40,85,6,16,16,0],
+  ['f124','F1 24','Competitive and multiplayer',64,115,5,8,16,0],
+  ['acc','Assetto Corsa Competizione','Competitive and multiplayer',55,92,4,8,16,0],
+  ['sot','Sea of Thieves','Competitive and multiplayer',80,135,3.5,8,16,0],
+  ['phasmo','Phasmophobia','Competitive and multiplayer',95,135,3.5,8,16,0],
+  ['dbd','Dead by Daylight','Competitive and multiplayer',98,170,3.5,8,16,0],
+  ['lethal','Lethal Company','Competitive and multiplayer',200,300,2,4,8,0],
+  ['tf2','Team Fortress 2','Competitive and multiplayer',330,250,1.5,4,8,0],
+  ['hunt','Hunt: Showdown 1896','Competitive and multiplayer',45,90,6,16,16,0],
+  ['readyornot','Ready or Not','Competitive and multiplayer',48,90,5.5,16,16,0]
 ].map(r => ({ id:r[0], name:r[1], grp:r[2], gpu:r[3], cpu:r[4], vram:r[5], ramMin:r[6], ramRec:r[7], cap:r[8] }));
 
 const PRESETS = {
@@ -976,8 +1080,10 @@ const PLATFORM = {
 const K = 6; /* soft-minimum sharpness between GPU limit and CPU limit */
 const QRANK = { competitive:0, low:1, medium:2, high:3, ultra:4 };
 /* Games with a meaningful ray tracing mode (GPU cost multiplier) and frame generation support */
-const RT_COST = { cp2077:0.5, wukong:0.5, witcher3:0.6, spiderman:0.65, hogwarts:0.7, fortnite:0.6, gta5:0.7, wilds:0.7, elden:0.8 };
-const FG_GAMES = ['cp2077','wukong','witcher3','spiderman','hogwarts','starfield','wilds','fortnite','rivals'];
+const RT_COST = { cp2077:0.5, wukong:0.5, witcher3:0.6, spiderman:0.65, hogwarts:0.7, fortnite:0.6, gta5:0.7, wilds:0.7, elden:0.8,
+  alanwake2:0.45, avatar:0.6, dyinglight2:0.5, re4:0.7, jedi:0.7, sh2:0.65, doometernal:0.6, forzamotorsport:0.75, f124:0.7, wow:0.8, acshadows:0.55 };
+const FG_GAMES = ['cp2077','wukong','witcher3','spiderman','hogwarts','starfield','wilds','fortnite','rivals',
+  'alanwake2','avatar','dyinglight2','jedi','sh2','stalker2','tsushima','gowr','hfw','acshadows','oblivion','msfs24','clair','deathstranding'];
 const gpuRT = g => /RTX|Radeon RX (6|7|9)\d{3}|Intel Arc/.test(g.name);
 const gpuFG = g => /RTX (40|50)\d\d|Radeon RX (7|9)\d{3}|Intel Arc B/.test(g.name);
 function features(game, gpu) { return { rt: !!RT_COST[game.id] && gpuRT(gpu), fg: FG_GAMES.indexOf(game.id) >= 0 && gpuFG(gpu) }; }
@@ -987,11 +1093,12 @@ function estimate(game, cpu, gpu, ramGB, resKey, presetKey, opt) {
   const P = PRESETS[presetKey], R = RES[resKey], feat = features(game, gpu);
   const rtOn = !!(o.rt && feat.rt), fgOn = !!(o.fg && feat.fg);
   let g = game.gpu * (gpu.i / 100) * P.m * R.m * (o.up ? R.up : 1);
-  let c = game.cpu * (cpu.i / 100) * P.c;
+  let c = game.cpu * (cpu.i / 100) * P.c * (o.memF || 1);
   if (rtOn) { g *= RT_COST[game.id]; c *= 0.94; }
   let arcF = 1;
   if (gpu.arc && cpu.i < 140) arcF = 0.88;
   g *= arcF;
+  if (o.gF) g *= o.gF;
   const need = game.vram * P.v * R.v * (rtOn ? 1.15 : 1) * (fgOn ? 1.05 : 1);
   const ratio = gpu.v / need;
   const vramF = ratio >= 1 ? 1 : Math.max(0.3, Math.pow(ratio, 1.8));
@@ -1047,6 +1154,7 @@ const DEFAULTS = {
   power: { drives: 2, psu: 0 },
   heat: { cooler: 'tower', airflow: 'avg', ambient: 24 },
   build: { budget: 900, res: '1440p' },
+  pcb: { case: 'pop2air', board: 'b650', cpu: 'Ryzen 5 9600X', cooler: 'pa120', kit: 'd5-6000-2x16-e', gpu: 'GeForce RTX 5060 Ti 16GB', gsize: 'std', ssd: 'n4-1t', psu: 'atx-650-g', res: '1080p' },
   bench: { res: '1080p', preset: 'high' },
   saved: []
 };
@@ -1060,7 +1168,7 @@ function loadState() {
         b: Object.assign({}, DEFAULTS.b, s.b || {}), sim: Object.assign({}, DEFAULTS.sim, s.sim || {}),
         sto: Object.assign({}, DEFAULTS.sto, s.sto || {}), saved: Array.isArray(s.saved) ? s.saved : [],
         power: Object.assign({}, DEFAULTS.power, s.power || {}), heat: Object.assign({}, DEFAULTS.heat, s.heat || {}),
-        build: Object.assign({}, DEFAULTS.build, s.build || {}), bench: Object.assign({}, DEFAULTS.bench, s.bench || {})
+        build: Object.assign({}, DEFAULTS.build, s.build || {}), pcb: Object.assign({}, DEFAULTS.pcb, s.pcb || {}), bench: Object.assign({}, DEFAULTS.bench, s.bench || {})
       });
     }
   } catch (e) {}
@@ -1178,8 +1286,8 @@ function initAds() {
 /* ---------- legal pages ---------- */
 function initLegal() {
   const L = CONFIG.legal, docs = ['privacy', 'terms', 'disclosures'], dlg = id => $('#dlg-' + id);
-  $$('[data-fill]').forEach(el => {
-    const key = el.dataset.fill, v = L[key];
+  $$('[data-lg]').forEach(el => {
+    const key = el.dataset.lg, v = L[key];
     if (!v) return;
     if (key === 'email') {
       const a = document.createElement('a');
@@ -1521,7 +1629,12 @@ function copyResult() {
 
 /* ---------- extra data + helpers ---------- */
 const RAM_PRICE = { 16: 45, 32: 90, 64: 200 };
-const SIZES = { forza:110, cp2077:70, elden:60, bg3:150, gta5:105, rdr2:120, witcher3:60, spiderman:75, hogwarts:85, starfield:125, wilds:75, wukong:130, minecraft:1, valorant:30, cs2:40, apex:75, fortnite:45, warzone:150, bf6:90, rivals:45, ow2:50, r6:90, helldivers:100, lol:15, rocket:20, poe2:45 };
+const SIZES = { forza:110, cp2077:70, elden:60, bg3:150, gta5:105, rdr2:120, witcher3:60, spiderman:75, hogwarts:85, starfield:125, wilds:75, wukong:130, minecraft:1, valorant:30, cs2:40, apex:75, fortnite:45, warzone:150, bf6:90, rivals:45, ow2:50, r6:90, helldivers:100, lol:15, rocket:20, poe2:45,
+  acmirage:45, acshadows:115, alanwake2:90, avatar:65, deathstranding:70, daysgone:70, doometernal:85, dyinglight2:60, tsushima:65, gow:70, gowr:190, hzd:100, hfw:130,
+  tlou:100, re4:60, jedi:155, sh2:50, stalker2:160, fallout4:30, skyrim:20, sims4:60, palworld:40, satisfactory:25, cities2:60, msfs24:130, ets2:25, civ6:25,
+  totalwar:130, aoe4:60, clair:55, kcd2:100, oblivion:125, dota2:60, pubg:40, rust:60, tarkov:70, deltaforce:100, destiny2:105, thefinals:60, halo:50,
+  deadlock:30, roblox:2, warframe:60, wow:100, diablo4:90, bf2042:100, fc25:60, nba2k25:150, forzamotorsport:130, f124:100, acc:130, sot:50, phasmo:20,
+  dbd:50, lethal:1, tf2:30, hunt:90, readyornot:90 };
 const REFRESH = [60, 75, 100, 120, 144, 165, 240, 360];
 function ctxOptText(ctx) {
   const f = features(ctx.game, ctx.gpu), o = ctx.upscale;
@@ -1691,7 +1804,12 @@ const GPU_W = {
   'Radeon RX 7900 XT':315,'Radeon RX 7900 XTX':355,
   'Radeon RX 9060 XT 8GB':150,'Radeon RX 9060 XT 16GB':160,'Radeon RX 9070':220,'Radeon RX 9070 XT':304,
   'Intel Arc A580':185,'Intel Arc A750':225,'Intel Arc A770':225,'Intel Arc B570':150,'Intel Arc B580':190,
-  'Integrated graphics (Vega 8 or UHD 630)':15,'Radeon 780M (integrated)':25
+  'Integrated graphics (Vega 8 or UHD 630)':15,'Radeon 780M (integrated)':25,
+  'GeForce GTX 1050':75,'GeForce GTX 1060 3GB':120,'GeForce GTX 1070 Ti':180,'GeForce GTX 1630':75,'GeForce GTX 1650 GDDR6':75,
+  'GeForce RTX 2070':175,'GeForce RTX 2080':215,'GeForce RTX 2080 Super':250,'GeForce RTX 3050 6GB':70,'GeForce RTX 3060 8GB':170,
+  'GeForce RTX 3080 12GB':350,'GeForce RTX 3090 Ti':450,'GeForce RTX 4060 Ti 16GB':165,'GeForce RTX 4070 Ti':285,'GeForce RTX 4080':320,
+  'Radeon RX 480':150,'Radeon RX 5700':180,'Radeon RX 6400':53,'Radeon RX 6700':175,'Radeon RX 6950 XT':335,
+  'Radeon RX Vega 56':210,'Radeon RX Vega 64':295,'Radeon VII':300,'Intel Arc A380':75
 };
 const gpuWatts = g => GPU_W[g.name] || Math.round(60 + g.i * 0.6);
 const isKClass = c => /^Core/.test(c.name) && (/K$/.test(c.name) || /Ultra/.test(c.name)) && c.i >= 150;
@@ -1834,8 +1952,556 @@ function renderBuild() {
     `<p class="gainline">1% lows about ${e.lows} FPS. Across all ${GAMES.length} games this build averages about ${Math.round(best.score)} FPS.</p>` +
     `<h3 class="subhead" style="font-size:19px;margin-top:20px">Compatibility checks</h3><ul class="chk">` +
     checks.map(c => `<li><span class="ok" aria-hidden="true">✓</span><span>${esc(c)}</span></li>`).join('') +
-    `<li><span class="no" aria-hidden="true">!</span><span>Not checked: graphics card length against the case, and whether the board needs a BIOS update for the processor.</span></li></ul></article></div>` +
+    `<li><span class="no" aria-hidden="true">!</span><span>Not checked here: graphics card length against the case, and BIOS support. The PC builder simulator below checks both.</span></li></ul></article></div>` +
     `<div class="tablewrap"><table class="utable"><thead><tr><th scope="col">Game at ${RES[b.res].label} High</th><th scope="col">Average FPS</th><th scope="col">1% low</th></tr></thead><tbody>${gameRows}</tbody></table></div>`;
+}
+
+/* =====================================================================
+   PC BUILDER SIMULATOR
+   Real cases and typical part specifications, so the checks behave like a
+   parts-store compatibility tool. Case sizes come from the makers'
+   listings and are rounded. Everything else is a typical value, and prices
+   are rough US dollar guides. Confirm the exact model before you buy.
+   ===================================================================== */
+const SOCKET_LABEL = { AM4: 'AM4', AM5: 'AM5', LGA1700: 'LGA1700', LGA1851: 'LGA1851', LGA1200: 'LGA1200',
+  LGA1151a: 'LGA1151 (Intel 6th and 7th gen)', LGA1151b: 'LGA1151 (Intel 8th and 9th gen)', LGA1150: 'LGA1150' };
+const sockName = k => SOCKET_LABEL[k] || k;
+const FF_NAME = { ATX: 'ATX', mATX: 'micro-ATX', ITX: 'mini-ITX' };
+const FF_SIZE = { ATX: 'ATX (305 x 244 mm)', mATX: 'micro-ATX (244 x 244 mm)', ITX: 'mini-ITX (170 x 170 mm)' };
+const JEDEC = { DDR3: 1333, DDR4: 2133, DDR5: 4800 };
+
+/* id, name, board sizes it takes, max GPU length, max CPU cooler height, radiator sizes by position,
+   fans included, airflow rating, power supply types, max PSU length, price, search text */
+const PCB_CASES = [
+  { id: 'q300l', name: 'Cooler Master MasterBox Q300L', ff: ['mATX', 'ITX'], gpu: 360, cooler: 157, rads: { front: [120, 240], top: [], rear: [120] }, fans: 1, air: 'avg', psu: ['ATX'], psuLen: 160, price: 50, q: 'Cooler Master MasterBox Q300L case' },
+  { id: 'pop2air', name: 'Fractal Design Pop 2 Air', ff: ['ATX', 'mATX', 'ITX'], gpu: 416, cooler: 170, rads: { front: [], top: [120, 240, 360], rear: [120] }, fans: 3, air: 'good', psu: ['ATX'], psuLen: 180, price: 90, q: 'Fractal Design Pop 2 Air case' },
+  { id: 'h5flow', name: 'NZXT H5 Flow (2024)', ff: ['ATX', 'mATX', 'ITX'], gpu: 410, cooler: 170, rads: { front: [120, 140, 240, 280, 360], top: [120, 140, 240], rear: [120] }, fans: 2, air: 'good', psu: ['ATX'], psuLen: 200, price: 95, q: 'NZXT H5 Flow 2024 case' },
+  { id: '4000d', name: 'Corsair 4000D Airflow', ff: ['ATX', 'mATX', 'ITX'], gpu: 360, cooler: 170, rads: { front: [120, 140, 240, 280, 360], top: [120, 140, 240, 280], rear: [120] }, fans: 2, air: 'good', psu: ['ATX'], psuLen: 180, price: 105, q: 'Corsair 4000D Airflow case' },
+  { id: 'lancool216', name: 'Lian Li Lancool 216', ff: ['ATX', 'mATX', 'ITX'], gpu: 392, cooler: 180, rads: { front: [120, 140, 240, 280, 360], top: [120, 140, 240, 280, 360], rear: [120] }, fans: 3, air: 'good', psu: ['ATX'], psuLen: 220, price: 110, q: 'Lian Li Lancool 216 case' },
+  { id: 'nr200p', name: 'Cooler Master NR200P', ff: ['ITX'], gpu: 330, cooler: 155, rads: { front: [], top: [120, 140, 240, 280], rear: [] }, fans: 2, air: 'avg', psu: ['SFX'], psuLen: 130, price: 100, q: 'Cooler Master NR200P case' }
+];
+
+/* id, chipset, socket, memory type, board size, price, memory slots, top memory speed,
+   CPU overclocking, GPU slot PCIe generation, M.2 PCIe generation, can boot NVMe */
+const PCB_BOARDS = [
+  ['a520m', 'A520', 'AM4', 'DDR4', 'mATX', 65, 2, 3200, 0, 3, 3, 1],
+  ['b450m', 'B450', 'AM4', 'DDR4', 'mATX', 75, 4, 3600, 1, 3, 3, 1],
+  ['b550m', 'B550', 'AM4', 'DDR4', 'mATX', 95, 4, 3600, 1, 4, 4, 1],
+  ['b550', 'B550', 'AM4', 'DDR4', 'ATX', 130, 4, 3800, 1, 4, 4, 1],
+  ['x570', 'X570', 'AM4', 'DDR4', 'ATX', 190, 4, 3800, 1, 4, 4, 1],
+  ['b550i', 'B550', 'AM4', 'DDR4', 'ITX', 140, 2, 3600, 1, 4, 4, 1],
+  ['a620m', 'A620', 'AM5', 'DDR5', 'mATX', 95, 2, 6400, 0, 4, 4, 1],
+  ['b650m', 'B650', 'AM5', 'DDR5', 'mATX', 130, 4, 6400, 1, 4, 5, 1],
+  ['b650', 'B650', 'AM5', 'DDR5', 'ATX', 160, 4, 6600, 1, 4, 5, 1],
+  ['b650e', 'B650E', 'AM5', 'DDR5', 'ATX', 200, 4, 6800, 1, 5, 5, 1],
+  ['b850', 'B850', 'AM5', 'DDR5', 'ATX', 210, 4, 7200, 1, 5, 5, 1],
+  ['x870e', 'X870E', 'AM5', 'DDR5', 'ATX', 380, 4, 8000, 1, 5, 5, 1],
+  ['b650i', 'B650', 'AM5', 'DDR5', 'ITX', 200, 2, 6400, 1, 4, 5, 1],
+  ['h610m4', 'H610', 'LGA1700', 'DDR4', 'mATX', 80, 2, 3200, 0, 4, 4, 1],
+  ['b760m4', 'B760', 'LGA1700', 'DDR4', 'mATX', 115, 4, 4000, 0, 4, 4, 1],
+  ['b760m5', 'B760', 'LGA1700', 'DDR5', 'mATX', 135, 4, 6800, 0, 4, 4, 1],
+  ['b760a5', 'B760', 'LGA1700', 'DDR5', 'ATX', 170, 4, 7200, 0, 4, 4, 1],
+  ['z790a4', 'Z790', 'LGA1700', 'DDR4', 'ATX', 200, 4, 4000, 1, 5, 4, 1],
+  ['z790a5', 'Z790', 'LGA1700', 'DDR5', 'ATX', 240, 4, 7600, 1, 5, 5, 1],
+  ['z790i', 'Z790', 'LGA1700', 'DDR5', 'ITX', 270, 2, 7600, 1, 5, 5, 1],
+  ['b860m', 'B860', 'LGA1851', 'DDR5', 'mATX', 150, 4, 7200, 0, 5, 5, 1],
+  ['b860', 'B860', 'LGA1851', 'DDR5', 'ATX', 190, 4, 7200, 0, 5, 5, 1],
+  ['z890', 'Z890', 'LGA1851', 'DDR5', 'ATX', 280, 4, 8400, 1, 5, 5, 1],
+  ['z890i', 'Z890', 'LGA1851', 'DDR5', 'ITX', 300, 2, 8400, 1, 5, 5, 1],
+  ['h510m', 'H510', 'LGA1200', 'DDR4', 'mATX', 65, 2, 2933, 0, 4, 4, 1],
+  ['b560m', 'B560', 'LGA1200', 'DDR4', 'mATX', 85, 4, 3600, 0, 4, 4, 1],
+  ['z590', 'Z590', 'LGA1200', 'DDR4', 'ATX', 150, 4, 3600, 1, 4, 4, 1],
+  ['b360m', 'B360', 'LGA1151b', 'DDR4', 'mATX', 55, 4, 2666, 0, 3, 3, 1],
+  ['z390', 'Z390', 'LGA1151b', 'DDR4', 'ATX', 110, 4, 3600, 1, 3, 3, 1],
+  ['b250m', 'B250', 'LGA1151a', 'DDR4', 'mATX', 50, 4, 2400, 0, 3, 3, 1],
+  ['z270', 'Z270', 'LGA1151a', 'DDR4', 'ATX', 80, 4, 3200, 1, 3, 3, 1],
+  ['b85m', 'B85', 'LGA1150', 'DDR3', 'mATX', 40, 2, 1600, 0, 3, 3, 0],
+  ['z97', 'Z97', 'LGA1150', 'DDR3', 'ATX', 55, 4, 2133, 1, 3, 3, 0]
+].map(r => ({ id: r[0], chip: r[1], sock: r[2], mem: r[3], ff: r[4], price: r[5], dimm: r[6], memMax: r[7], oc: !!r[8], gpuGen: r[9], m2Gen: r[10], nvme: !!r[11] }));
+const an = w => /^(A|H|X)/.test(w) ? 'an' : 'a';
+const boardLabel = b => `${b.chip} ${FF_NAME[b.ff]}, ${b.sock.replace(/^(LGA1151)[ab]$/, '$1')}, ${b.mem}`;
+
+/* id, name, type, speed (MT/s), capacity GB, sticks, price, profile */
+const PCB_KITS = [
+  ['d3-1600-2x4', '8 GB (2x4) DDR3-1600', 'DDR3', 1600, 8, 2, 25, ''],
+  ['d3-1600-2x8', '16 GB (2x8) DDR3-1600', 'DDR3', 1600, 16, 2, 40, ''],
+  ['d4-2666-1x8', '8 GB (1x8) DDR4-2666, single stick', 'DDR4', 2666, 8, 1, 20, ''],
+  ['d4-2666-2x8', '16 GB (2x8) DDR4-2666', 'DDR4', 2666, 16, 2, 30, ''],
+  ['d4-3200-2x8', '16 GB (2x8) DDR4-3200', 'DDR4', 3200, 16, 2, 35, ''],
+  ['d4-3200-1x16', '16 GB (1x16) DDR4-3200, single stick', 'DDR4', 3200, 16, 1, 32, ''],
+  ['d4-3600-2x8', '16 GB (2x8) DDR4-3600', 'DDR4', 3600, 16, 2, 42, ''],
+  ['d4-3200-2x16', '32 GB (2x16) DDR4-3200', 'DDR4', 3200, 32, 2, 65, ''],
+  ['d4-3600-2x16', '32 GB (2x16) DDR4-3600 CL16', 'DDR4', 3600, 32, 2, 75, ''],
+  ['d4-3200-4x8', '32 GB (4x8) DDR4-3200', 'DDR4', 3200, 32, 4, 70, ''],
+  ['d5-4800-2x8', '16 GB (2x8) DDR5-4800', 'DDR5', 4800, 16, 2, 55, ''],
+  ['d5-6000-2x8', '16 GB (2x8) DDR5-6000 CL30 (EXPO, for AMD)', 'DDR5', 6000, 16, 2, 75, 'EXPO'],
+  ['d5-5600-2x16', '32 GB (2x16) DDR5-5600', 'DDR5', 5600, 32, 2, 95, ''],
+  ['d5-6000-2x16-e', '32 GB (2x16) DDR5-6000 CL30 (EXPO, for AMD)', 'DDR5', 6000, 32, 2, 110, 'EXPO'],
+  ['d5-6000-2x16-x', '32 GB (2x16) DDR5-6000 CL30 (XMP, for Intel)', 'DDR5', 6000, 32, 2, 110, 'XMP'],
+  ['d5-6000-1x16', '16 GB (1x16) DDR5-6000, single stick (EXPO)', 'DDR5', 6000, 16, 1, 60, 'EXPO'],
+  ['d5-6400-2x16', '32 GB (2x16) DDR5-6400 (XMP)', 'DDR5', 6400, 32, 2, 125, 'XMP'],
+  ['d5-6000-2x32', '64 GB (2x32) DDR5-6000 (EXPO, for AMD)', 'DDR5', 6000, 64, 2, 200, 'EXPO'],
+  ['d5-6000-4x16', '64 GB (4x16) DDR5-6000 (EXPO), four sticks', 'DDR5', 6000, 64, 4, 210, 'EXPO'],
+  ['d5-8000-2x16', '32 GB (2x16) DDR5-8000 CUDIMM (XMP)', 'DDR5', 8000, 32, 2, 230, 'XMP']
+].map(r => ({ id: r[0], name: r[1], type: r[2], speed: r[3], gb: r[4], sticks: r[5], price: r[6], prof: r[7] }));
+
+/* id, name, kind, height mm (air), cooling watts, radiator mm (liquid), price, search text */
+const PCB_COOLERS = [
+  { id: 'box', name: 'The cooler that comes with the CPU (if it has one)', kind: 'box', h: 60, cap: 65, price: 0 },
+  { id: 'l9', name: 'Noctua NH-L9x65 (low profile)', kind: 'air', h: 65, cap: 95, price: 55, q: 'Noctua NH-L9x65 CPU cooler' },
+  { id: 'ax120r', name: 'Thermalright Assassin X 120 R SE', kind: 'air', h: 148, cap: 150, price: 20, q: 'Thermalright Assassin X 120 R SE CPU cooler' },
+  { id: 'ak400', name: 'DeepCool AK400', kind: 'air', h: 155, cap: 190, price: 30, q: 'DeepCool AK400 CPU cooler' },
+  { id: 'pa120', name: 'Thermalright Peerless Assassin 120 SE', kind: 'air', h: 155, cap: 220, price: 35, q: 'Thermalright Peerless Assassin 120 SE CPU cooler' },
+  { id: 'h212', name: 'Cooler Master Hyper 212 Black', kind: 'air', h: 159, cap: 165, price: 30, q: 'Cooler Master Hyper 212 Black CPU cooler' },
+  { id: 'ak620', name: 'DeepCool AK620', kind: 'air', h: 160, cap: 240, price: 60, q: 'DeepCool AK620 CPU cooler' },
+  { id: 'd15', name: 'Noctua NH-D15', kind: 'air', h: 165, cap: 250, price: 110, q: 'Noctua NH-D15 CPU cooler' },
+  { id: 'alf240', name: 'Arctic Liquid Freezer III 240 (liquid)', kind: 'aio', rad: 240, h: 0, cap: 260, price: 85, q: 'Arctic Liquid Freezer III 240 AIO' },
+  { id: 'alf280', name: 'Arctic Liquid Freezer III 280 (liquid)', kind: 'aio', rad: 280, h: 0, cap: 285, price: 100, q: 'Arctic Liquid Freezer III 280 AIO' },
+  { id: 'alf360', name: 'Arctic Liquid Freezer III 360 (liquid)', kind: 'aio', rad: 360, h: 0, cap: 320, price: 110, q: 'Arctic Liquid Freezer III 360 AIO' }
+];
+
+/* id, name, watts, type, efficiency, native 12V-2x6 cable, typical length mm, price */
+const PCB_PSUS = [
+  ['atx-450-b', '450 W 80 Plus Bronze ATX', 450, 'ATX', 0, 140, 45],
+  ['atx-550-b', '550 W 80 Plus Bronze ATX', 550, 'ATX', 0, 140, 55],
+  ['atx-650-b', '650 W 80 Plus Bronze ATX', 650, 'ATX', 0, 140, 65],
+  ['atx-550-g', '550 W 80 Plus Gold ATX', 550, 'ATX', 0, 140, 65],
+  ['atx-650-g', '650 W 80 Plus Gold ATX', 650, 'ATX', 0, 140, 75],
+  ['atx-750-g', '750 W 80 Plus Gold ATX', 750, 'ATX', 0, 140, 90],
+  ['atx-850-g', '850 W 80 Plus Gold ATX', 850, 'ATX', 0, 150, 110],
+  ['atx-1000-g', '1000 W 80 Plus Gold ATX', 1000, 'ATX', 0, 160, 150],
+  ['atx3-750-g', '750 W Gold ATX 3.1 with 12V-2x6 cable', 750, 'ATX', 1, 140, 110],
+  ['atx3-850-g', '850 W Gold ATX 3.1 with 12V-2x6 cable', 850, 'ATX', 1, 150, 130],
+  ['atx3-1000-g', '1000 W Gold ATX 3.1 with 12V-2x6 cable', 1000, 'ATX', 1, 160, 170],
+  ['atx3-1200-g', '1200 W Gold ATX 3.1 with 12V-2x6 cable', 1200, 'ATX', 1, 180, 230],
+  ['sfx-650-g', '650 W 80 Plus Gold SFX', 650, 'SFX', 0, 100, 110],
+  ['sfx-750-g', '750 W 80 Plus Gold SFX', 750, 'SFX', 0, 100, 130],
+  ['sfx-850-g', '850 W Gold SFX with 12V-2x6 cable', 850, 'SFX', 1, 125, 160]
+].map(r => ({ id: r[0], name: r[1], w: r[2], type: r[3], native: !!r[4], len: r[5], price: r[6] }));
+
+/* id, name, capacity GB, kind, PCIe generation, price */
+const PCB_SSDS = [
+  ['n3-500', '500 GB NVMe SSD (PCIe 3.0)', 500, 'nvme', 3, 35],
+  ['n3-1t', '1 TB NVMe SSD (PCIe 3.0)', 1000, 'nvme', 3, 55],
+  ['n4-1t', '1 TB NVMe SSD (PCIe 4.0)', 1000, 'nvme', 4, 65],
+  ['n4-2t', '2 TB NVMe SSD (PCIe 4.0)', 2000, 'nvme', 4, 115],
+  ['n5-2t', '2 TB NVMe SSD (PCIe 5.0)', 2000, 'nvme', 5, 230],
+  ['sata-1t', '1 TB SATA SSD', 1000, 'sata', 0, 60],
+  ['hdd-2t', '2 TB hard drive (7200 rpm)', 2000, 'hdd', 0, 60]
+].map(r => ({ id: r[0], name: r[1], gb: r[2], kind: r[3], gen: r[4], price: r[5] }));
+
+const GSIZE = { compact: 'Compact card (2 fans)', std: 'Standard card', large: 'Large card (3 fans)' };
+
+/* Memory speed effect on CPU-limited frame rates, 1.00 is the speed the processor scores assume. */
+const MEMTAB = {
+  AM4: [[2133, .88], [2400, .92], [2666, .95], [3000, .98], [3200, 1], [3600, 1.03], [3800, 1.03]],
+  AM5: [[4800, .94], [5200, .96], [5600, .98], [6000, 1], [6400, 1], [8000, .99]],
+  L1700D4: [[2133, .90], [2666, .95], [3200, 1], [3600, 1.02], [4000, 1.02]],
+  L1700D5: [[4800, 1], [5200, 1.02], [5600, 1.03], [6000, 1.05], [6400, 1.06], [8000, 1.06]],
+  L1851: [[4800, .92], [5600, .97], [6000, .99], [6400, 1], [7200, 1.02], [8000, 1.03], [8400, 1.03]],
+  LGA1200: [[2133, .90], [2666, .95], [2933, .98], [3200, 1], [3600, 1.03]],
+  L1151: [[2133, .91], [2400, .94], [2666, .97], [3000, 1], [3200, 1.02], [3600, 1.02]],
+  LGA1150: [[1333, .95], [1600, 1], [1866, 1.02], [2133, 1.03]]
+};
+function memFamily(b) {
+  if (b.sock === 'LGA1700') return b.mem === 'DDR5' ? 'L1700D5' : 'L1700D4';
+  if (b.sock === 'LGA1851') return 'L1851';
+  if (/^LGA1151/.test(b.sock)) return 'L1151';
+  return b.sock;
+}
+function memFactor(fam, speed) {
+  const t = MEMTAB[fam];
+  if (speed <= t[0][0]) return t[0][1];
+  for (let i = 1; i < t.length; i++) {
+    if (speed <= t[i][0]) { const a = t[i - 1], b = t[i]; return a[1] + (b[1] - a[1]) * (speed - a[0]) / (b[0] - a[0]); }
+  }
+  return t[t.length - 1][1];
+}
+function memEffective(board, kit) {
+  const intel = /^LGA/.test(board.sock), notes = [];
+  let s = kit.speed;
+  if (kit.prof === 'EXPO' && intel) { s = JEDEC[kit.type]; notes.push('expo'); }
+  if (kit.type === 'DDR5' && kit.sticks === 4 && s > 5200) { s = 5200; notes.push('four'); }
+  if (s > board.memMax) { s = board.memMax; notes.push('board'); }
+  return { speed: s, notes };
+}
+
+/* CPU facts used by the checks */
+const cpuSock = c => c.s !== 'LGA1151' ? c.s : (/i[357]-[67]\d{3}/.test(c.name) ? 'LGA1151a' : 'LGA1151b');
+const cpuGenNum = c => { const m = c.name.match(/i[3579]-(\d{1,2})\d{3}/); return m ? parseInt(m[1], 10) : 0; };
+const isZenOld = c => c.s === 'AM4' && /(1600|2600|2700|3400G)/.test(c.name);
+const isZen3 = c => c.s === 'AM4' && /Ryzen \d 5\d{3}/.test(c.name);
+const isRyzen9000 = c => /Ryzen \d 9\d{3}/.test(c.name);
+function cpuPcieGen(c) {
+  if (c.s === 'AM4') return /(1600|2600|2700|3400G|4100|4500|5500|5600G|5700G|5600GT)/.test(c.name) ? 3 : 4;
+  if (c.s === 'AM5' || c.s === 'LGA1700' || c.s === 'LGA1851') return 5;
+  return cpuGenNum(c) >= 11 ? 4 : 3;
+}
+function igpuOf(c) {
+  if (/(8600G|8700G)$/.test(c.name)) return '780M';
+  if (/(3400G|5600G|5700G|5600GT)$/.test(c.name)) return 'vega';
+  if (/^Core/.test(c.name) && !/F$/.test(c.name)) return 'uhd';
+  return null;
+}
+function boxedCooler(c) {
+  const n = c.name;
+  if (c.s === 'AM4') return /(3600XT|3800XT|3900XT|3950X|5700X|5800X|5900X|5950X|5900XT)/.test(n) ? null : { cap: 65 };
+  if (c.s === 'AM5') return /(X3D|7600X|7700X|7900X|7950X|9\d00X)/.test(n) ? null : { cap: 65 };
+  return /K$/.test(n) ? null : { cap: 65 };
+}
+
+/* GPU facts used by the checks */
+const isIntegrated = g => /integrated/i.test(g.name);
+function gpuStdLen(g) { const w = gpuWatts(g); return w <= 30 ? 0 : Math.round(Math.min(330, 190 + w * 0.4) / 5) * 5; }
+function gpuLen(g, size) {
+  const std = gpuStdLen(g), w = gpuWatts(g);
+  if (!std) return 0;
+  const off = size === 'compact' ? -(w <= 150 ? 30 : 25) : size === 'large' ? (w < 200 ? 20 : 30) : 0;
+  return Math.max(170, std + off);
+}
+function gpuPcie(g) {
+  const n = g.name;
+  const lanes = /RX 6[45]00|RX 6400/.test(n) ? 4 : /RTX 4060|RTX 50(50|60)|RTX 3050 6GB|RX 7600|RX 66(00|50)|RX 5500|Arc (A380|B5)/.test(n) ? 8 : 16;
+  const gen = /RTX 50|RX 90/.test(n) ? 5 : /RTX (30|40)|RX (5[5-9]|6|7)\d{2}|Arc/.test(n) ? 4 : 3;
+  return { lanes, gen };
+}
+function pcieFactor(g, effGen) {
+  const p = gpuPcie(g);
+  if (effGen >= p.gen) return 1;
+  const units = p.lanes * Math.pow(2, effGen - 3);
+  return units >= 16 ? 1 : units >= 8 ? 0.97 : units >= 4 ? 0.85 : 0.6;
+}
+
+/* Rough prices. Known parts first, then a formula, and older parts are used-market guides. */
+const PCB_CPU_PRICE = { 'Ryzen 5 3600': 70, 'Ryzen 5 5500': 85, 'Ryzen 5 5600': 115, 'Ryzen 5 5600X': 135, 'Ryzen 7 5700X': 150, 'Ryzen 7 5800X': 180, 'Ryzen 9 5900X': 260,
+  'Ryzen 9 5950X': 330, 'Ryzen 7 5700X3D': 230, 'Ryzen 7 5800X3D': 340, 'Ryzen 5 7500F': 140, 'Ryzen 5 7600': 190, 'Ryzen 5 7600X': 215, 'Ryzen 7 7700': 250,
+  'Ryzen 7 7700X': 270, 'Ryzen 5 9600X': 210, 'Ryzen 9 7900X': 340, 'Ryzen 7 9700X': 300, 'Ryzen 7 7800X3D': 400, 'Ryzen 9 7950X3D': 560,
+  'Ryzen 7 9800X3D': 480, 'Ryzen 9 9950X3D': 650, 'Core i5-12400F': 110, 'Core i5-12600K': 170, 'Core i7-12700K': 230, 'Core i5-13400F': 170,
+  'Core i5-14400F': 175, 'Core i5-13600K': 250, 'Core i5-14600K': 250, 'Core i7-13700K': 330, 'Core i7-14700K': 370, 'Core i9-13900K': 450,
+  'Core i9-14900K': 480, 'Core Ultra 5 245K': 290, 'Core Ultra 7 265K': 390, 'Core Ultra 9 285K': 560 };
+function cpuPrice(c) {
+  if (PCB_CPU_PRICE[c.name]) return PCB_CPU_PRICE[c.name];
+  const k = (c.s === 'AM5' || c.s === 'LGA1851') ? 2 : c.s === 'LGA1700' ? 1.5 : c.s === 'AM4' && c.i >= 120 ? 1.1 : 0.75;
+  return Math.max(25, Math.round(c.i * k / 5) * 5);
+}
+const PCB_GPU_PRICE = { 'Radeon RX 6600': 190, 'GeForce RTX 4060': 290, 'Radeon RX 7700 XT': 400, 'Intel Arc B580': 250, 'GeForce RTX 5050': 250, 'GeForce RTX 5060': 300,
+  'Radeon RX 9060 XT 16GB': 350, 'GeForce RTX 5060 Ti 16GB': 430, 'Radeon RX 7800 XT': 480, 'GeForce RTX 5070': 550, 'Radeon RX 9070': 560,
+  'Radeon RX 9070 XT': 620, 'GeForce RTX 5070 Ti': 780, 'GeForce RTX 5080': 1050, 'GeForce RTX 5090': 2100, 'GeForce RTX 5060 Ti 8GB': 380,
+  'Radeon RX 9060 XT 8GB': 300, 'GeForce RTX 4060 Ti': 380, 'GeForce RTX 4070': 500, 'GeForce RTX 4070 Super': 580, 'GeForce RTX 4070 Ti Super': 750,
+  'GeForce RTX 4080 Super': 1000, 'GeForce RTX 4090': 1800, 'GeForce RTX 3060': 200, 'GeForce RTX 3050': 170 };
+const gpuPrice = g => isIntegrated(g) ? 0 : (PCB_GPU_PRICE[g.name] || Math.max(30, Math.round(g.i * 1.05 / 5) * 5));
+
+const PCB_PRESETS = [
+  { name: 'Budget 1080p (AM4, DDR4)', set: { case: 'q300l', board: 'b550m', cpu: 'Ryzen 5 5600', cooler: 'box', kit: 'd4-3200-2x8', gpu: 'Radeon RX 6600', gsize: 'std', ssd: 'n3-1t', psu: 'atx-550-g' } },
+  { name: 'Mainstream (AM5, DDR5)', set: { case: 'pop2air', board: 'b650', cpu: 'Ryzen 5 9600X', cooler: 'pa120', kit: 'd5-6000-2x16-e', gpu: 'GeForce RTX 5060 Ti 16GB', gsize: 'std', ssd: 'n4-1t', psu: 'atx-650-g' } },
+  { name: 'Intel value (DDR4)', set: { case: '4000d', board: 'b760m4', cpu: 'Core i5-12400F', cooler: 'box', kit: 'd4-3600-2x8', gpu: 'GeForce RTX 4060', gsize: 'std', ssd: 'n4-1t', psu: 'atx-550-g' } },
+  { name: 'High-end 4K', set: { case: 'lancool216', board: 'b850', cpu: 'Ryzen 7 9800X3D', cooler: 'alf360', kit: 'd5-6000-2x16-e', gpu: 'GeForce RTX 5080', gsize: 'large', ssd: 'n4-2t', psu: 'atx3-1000-g' } },
+  { name: 'Small form factor (ITX)', set: { case: 'nr200p', board: 'b650i', cpu: 'Ryzen 5 7600', cooler: 'ax120r', kit: 'd5-6000-2x16-e', gpu: 'GeForce RTX 5060 Ti 16GB', gsize: 'compact', ssd: 'n4-1t', psu: 'sfx-750-g' } },
+  { name: 'Old PC (Intel 9th gen)', set: { case: 'q300l', board: 'b360m', cpu: 'Core i5-9400F', cooler: 'box', kit: 'd4-2666-2x8', gpu: 'GeForce GTX 1660 Super', gsize: 'std', ssd: 'n3-500', psu: 'atx-450-b' } },
+  { name: 'Common mistakes (see what breaks)', set: { case: 'q300l', board: 'b550', cpu: 'Ryzen 7 7800X3D', cooler: 'd15', kit: 'd5-6000-2x16-e', gpu: 'GeForce RTX 5080', gsize: 'large', ssd: 'n5-2t', psu: 'atx-450-b' } }
+];
+
+let pcbFixes = [];
+const pcbById = (list, id, fb) => list.find(x => x.id === id) || list.find(x => x.id === fb) || list[0];
+function pcbSel() {
+  const p = state.pcb, D = DEFAULTS.pcb;
+  return {
+    cse: pcbById(PCB_CASES, p.case, D.case), brd: pcbById(PCB_BOARDS, p.board, D.board),
+    cpu: CPUS.find(c => c.name === p.cpu) || CPUS.find(c => c.name === D.cpu),
+    cool: pcbById(PCB_COOLERS, p.cooler, D.cooler), kit: pcbById(PCB_KITS, p.kit, D.kit),
+    gpu: GPUS.find(g => g.name === p.gpu) || GPUS.find(g => g.name === D.gpu),
+    gsz: GSIZE[p.gsize] ? p.gsize : 'std', ssd: pcbById(PCB_SSDS, p.ssd, D.ssd), psu: pcbById(PCB_PSUS, p.psu, D.psu),
+    res: RES[p.res] ? p.res : '1080p', game: gameById(state.game)
+  };
+}
+function radFits(cse, size) { return Object.keys(cse.rads).filter(pos => cse.rads[pos].includes(size)); }
+function pickKit(type, gb, intel, maxSticks) {
+  const sweet = { DDR3: 1600, DDR4: 3200, DDR5: 6000 }[type];
+  const wrong = k => (k.prof && k.prof !== (intel ? 'XMP' : 'EXPO')) ? 1 : 0;
+  return PCB_KITS.filter(k => k.type === type && k.sticks <= (maxSticks || 4))
+    .sort((a, b) => Math.abs(a.gb - gb) - Math.abs(b.gb - gb) || (a.sticks !== 2) - (b.sticks !== 2) || wrong(a) - wrong(b) ||
+      Math.abs(a.speed - sweet) - Math.abs(b.speed - sweet) || a.price - b.price)[0];
+}
+function bestCooler(cse, need) {
+  const fit = PCB_COOLERS.filter(c => c.kind === 'air' ? c.h <= cse.cooler : c.kind === 'aio' ? radFits(cse, c.rad).length : false);
+  const strong = fit.filter(c => c.cap >= need * 1.25).sort((a, b) => a.price - b.price)[0];
+  return strong || fit.sort((a, b) => b.cap - a.cap)[0];
+}
+const SEV_RANK = { bad: 0, warn: 1, info: 2, ok: 3 };
+
+function pcbEval() {
+  const s = pcbSel(), { cse, brd, cpu, cool, kit, gpu, gsz, ssd, psu, game, res } = s;
+  const checks = [], fixes = [];
+  const add = (sev, text, fix) => { const c = { sev, text }; if (fix) { c.fix = fixes.length; fixes.push(fix); } checks.push(c); };
+  const intel = /^LGA/.test(brd.sock), igpu = isIntegrated(gpu);
+  const cw = cpuWatts(cpu), gw = gpuWatts(gpu), rest = restWatts(kit.gb, 1), draw = gw + cw + rest, rec = pickPsu(draw * 1.4);
+
+  /* socket and processor support */
+  const cs = cpuSock(cpu);
+  if (cs !== brd.sock) {
+    const alt = PCB_BOARDS.filter(b => b.sock === cs && cse.ff.includes(b.ff)).sort((a, b) => ((b.mem === kit.type) - (a.mem === kit.type)) || a.price - b.price)[0];
+    let msg = `${cpu.name} uses the ${sockName(cs)} socket, but this board is ${sockName(brd.sock)}, so the processor will not fit.`;
+    if (cpu.s === 'LGA1151' && /^LGA1151/.test(brd.sock)) msg += ' Intel used the LGA1151 name for two sockets that do not interchange, so always check the generation.';
+    add('bad', msg, alt && { label: `Use ${an(alt.chip)} ${alt.chip} ${FF_NAME[alt.ff]} board (${alt.sock.replace(/^(LGA1151)[ab]$/, '$1')}, ${alt.mem})`, set: { board: alt.id } });
+  } else {
+    add('ok', `${cpu.name} and the ${brd.chip} board share the ${sockName(brd.sock)} socket.`);
+    if (isZenOld(cpu) && ['A520', 'B550', 'X570'].includes(brd.chip)) {
+      const alt = cse.ff.includes('mATX') ? PCB_BOARDS.find(b => b.id === 'b450m') : null;
+      add('bad', `Ryzen 1000 and 2000 processors, and the Ryzen 3 3400G, are not supported on 500-series boards. Use a B450 board or older.`, alt && { label: 'Use a B450 micro-ATX board', set: { board: alt.id } });
+    }
+    if (isZen3(cpu) && ['A520', 'B450'].includes(brd.chip)) add('warn', `Ryzen 5000 processors need a BIOS update on many ${brd.chip} boards. Look for "Ryzen 5000 ready" on the box, or a board with BIOS flashback, or the chip may not start.`);
+    if (isRyzen9000(cpu) && ['A620', 'B650', 'B650E'].includes(brd.chip)) add('info', `Some ${brd.chip} boards need a BIOS update before Ryzen 9000 processors will start. Check the board's support list.`);
+    if (brd.chip === 'H610' && cpuGenNum(cpu) >= 13) add('warn', 'H610 is the most basic LGA1700 chipset. It may need a BIOS update for 13th and 14th gen chips, has modest power delivery, and cannot overclock memory.');
+    if (brd.chip === 'B360' && cpuGenNum(cpu) === 9) add('warn', 'Many B360 boards need a BIOS update before Intel 9th gen chips will start. Look for a board sold as "9th gen ready".');
+    if (intel && /K$/.test(cpu.name) && !brd.oc) add('info', `${cpu.name} is an unlocked "K" chip, but ${brd.chip} boards cannot overclock the processor. A cheaper non-K chip would perform the same here.`);
+  }
+
+  /* memory: generation, slots, channels, speed */
+  const pickIntel = intel;
+  if (kit.type !== brd.mem) {
+    const alt = pickKit(brd.mem, kit.gb, pickIntel);
+    add('bad', `${kit.type} memory does not fit a ${brd.mem} board. The notch in the connector sits in a different place, so it cannot be inserted and the two are not electrically compatible.`,
+      alt && { label: `Use ${alt.name}`, set: { kit: alt.id } });
+  } else if (kit.sticks > brd.dimm) {
+    const alt = pickKit(brd.mem, kit.gb, pickIntel, brd.dimm);
+    add('bad', `The memory kit has ${kit.sticks} sticks, but this board has only ${brd.dimm} memory slots.`, alt && { label: `Use ${alt.name}`, set: { kit: alt.id } });
+  } else {
+    add('ok', `The board takes ${brd.mem} and the kit is ${kit.type}, in ${kit.sticks === 1 ? '1 slot' : kit.sticks + ' of ' + brd.dimm + ' slots'}.`);
+    if (brd.sock === 'LGA1700') add('info', 'LGA1700 processors work with either DDR4 or DDR5, but each board supports only one kind. The DDR4 and DDR5 versions of a chipset are different boards.');
+    if (kit.sticks === 1) {
+      const alt = pickKit(kit.type, kit.gb, pickIntel, 2);
+      add('warn', 'A single memory stick runs in single channel mode. That can cost around 10 to 15 percent in processor-limited games, and far more with integrated graphics. Two matching sticks are much better.',
+        alt && alt.sticks === 2 && { label: `Use ${alt.name}`, set: { kit: alt.id } });
+    }
+    const eff = memEffective(brd, kit);
+    if (eff.notes.includes('expo')) add('warn', 'This is an AMD EXPO kit on an Intel board. Intel boards do not read EXPO profiles, so it will run at the slow default speed of DDR5-4800 unless the kit also has an XMP profile.', { label: 'Use the XMP (Intel) version', set: { kit: 'd5-6000-2x16-x' } });
+    else if (eff.notes.includes('four')) add('warn', 'Four DDR5 sticks put more load on the memory controller, and boards usually cannot run them at full speed. This kit will run at about DDR5-5200.');
+    else if (eff.notes.includes('board')) add('warn', `${brd.chip} boards top out at about ${brd.memMax} MT/s here, so this ${kit.speed} kit will run at ${eff.speed}.`);
+    else if (kit.speed > JEDEC[kit.type]) add('info', `Turn on ${kit.prof || 'XMP or EXPO'} in the BIOS after building. Without it, this ${kit.type}-${kit.speed} kit often runs at a slow default speed, such as ${JEDEC[kit.type]}.`);
+    if (kit.prof === 'XMP' && brd.sock === 'AM5' && !eff.notes.length) add('info', 'This kit uses an Intel XMP profile. AMD boards can usually load it, but an EXPO kit is the safer choice on AM5.');
+    if (brd.sock === 'AM5' && kit.type === 'DDR5' && kit.speed !== 6000 && !eff.notes.length) add('info', 'DDR5-6000 is the sweet spot for Ryzen 7000 and 9000. Faster kits rarely help, and slower kits cost a little performance.');
+  }
+  if (kit.gb < game.ramMin) add('warn', `${kit.gb} GB is below the ${game.ramMin} GB that ${game.name} needs, so expect stutter.`);
+  else if (kit.gb < game.ramRec) add('info', `${game.name} recommends ${game.ramRec} GB, and this kit has ${kit.gb} GB.`);
+
+  /* board and case */
+  if (!cse.ff.includes(brd.ff)) {
+    const alt = PCB_BOARDS.filter(b => b.sock === brd.sock && b.mem === brd.mem && cse.ff.includes(b.ff)).sort((a, b) => a.price - b.price)[0];
+    add('bad', `The ${cse.name} takes ${cse.ff.map(f => FF_NAME[f]).join(' or ')} boards only. ${an(FF_NAME[brd.ff]) === 'an' ? 'An' : 'A'} ${FF_SIZE[brd.ff]} board is too big for it.`,
+      alt && { label: `Use ${an(alt.chip)} ${alt.chip} ${FF_NAME[alt.ff]} board`, set: { board: alt.id } });
+  } else add('ok', `A ${FF_NAME[brd.ff]} board fits in the ${cse.name}.`);
+
+  /* graphics card */
+  const fit = { gpu: null, cool: null, rad: null, psu: null };
+  if (igpu) {
+    const kind = igpuOf(cpu), needed = /780M/.test(gpu.name) ? '780M' : null;
+    if (!kind || (needed && kind !== needed) || (!needed && kind === '780M')) {
+      add('bad', `${cpu.name} does not have the integrated graphics this option needs. Pick a processor with built-in graphics, or add a graphics card.`);
+    } else add('ok', 'The processor supplies the graphics, so no graphics card is needed. Integrated graphics share system memory, so fast dual channel RAM matters a lot.');
+  } else {
+    const len = gpuLen(gpu, gsz);
+    fit.gpu = { len, max: cse.gpu };
+    if (len > cse.gpu) {
+      const compact = gpuLen(gpu, 'compact');
+      add('bad', `A ${GSIZE[gsz].toLowerCase()} ${gpu.name} is about ${len} mm long, but the ${cse.name} only fits ${cse.gpu} mm. It is ${len - cse.gpu} mm too long.`,
+        compact <= cse.gpu && gsz !== 'compact' && { label: 'Choose a compact version of the card', set: { gsize: 'compact' } });
+    } else if (len > cse.gpu - 10) add('warn', `The card is about ${len} mm and the case allows ${cse.gpu} mm. It fits with ${cse.gpu - len ? 'only ' + (cse.gpu - len) + ' mm' : 'no room'} to spare, so check the exact model and any front radiator.`);
+    else add('ok', `The card is about ${len} mm long and the case allows ${cse.gpu} mm.`);
+    const pen = pcieFactor(gpu, Math.min(cpuPcieGen(cpu), brd.gpuGen)), pc = gpuPcie(gpu), eg = Math.min(cpuPcieGen(cpu), brd.gpuGen);
+    if (pen < 1) add('warn', `${gpu.name} is a PCIe ${pc.gen}.0 x${pc.lanes} card, but this processor and board only offer PCIe ${eg}.0. That costs roughly ${Math.round((1 - pen) * 100)} percent of its speed.`);
+    if (/RTX (4080|4090|5070 Ti|5080|5090)/.test(gpu.name)) {
+      if (!psu.native) {
+        const alt = PCB_PSUS.filter(p => p.native && cse.psu.includes(p.type) && p.w >= rec).sort((a, b) => a.price - b.price)[0];
+        add('warn', `${gpu.name} uses a 12V-2x6 (12VHPWR) power connector. This power supply has no native cable, so you would use the adapter in the card's box. It works when pushed in fully, but a modern ATX 3.1 supply is cleaner.`, alt && { label: `Use ${alt.name}`, set: { psu: alt.id } });
+      } else add('ok', 'The power supply has a native 12V-2x6 cable for this graphics card.');
+    }
+  }
+
+  /* CPU cooler */
+  const boxed = boxedCooler(cpu), need = cw * 0.7;
+  let cap = cool.cap;
+  if (cool.kind === 'box') {
+    if (!boxed) {
+      const alt = bestCooler(cse, need);
+      cap = 0;
+      add('bad', `${cpu.name} does not come with a cooler. Choose one, or the processor cannot run safely.`, alt && { label: `Use ${alt.name}`, set: { cooler: alt.id } });
+    } else { cap = boxed.cap; add('ok', `${cpu.name} includes a cooler, so no extra cooler is needed.`); }
+  } else if (cool.kind === 'air') {
+    fit.cool = { h: cool.h, max: cse.cooler };
+    if (cool.h > cse.cooler) {
+      const alt = bestCooler(cse, need);
+      add('bad', `${cool.name} is ${cool.h} mm tall, but the ${cse.name} fits coolers up to ${cse.cooler} mm. The side panel will not close.`, alt && { label: `Use ${alt.name}`, set: { cooler: alt.id } });
+    } else if (cool.h > cse.cooler - 4) add('warn', `${cool.name} is ${cool.h} mm and the case allows ${cse.cooler} mm. It fits, but with almost no room.`);
+    else add('ok', `${cool.name} is ${cool.h} mm tall and the case allows ${cse.cooler} mm.`);
+  } else {
+    const spots = radFits(cse, cool.rad);
+    fit.rad = { size: cool.rad, spots };
+    if (!spots.length) {
+      const alt = bestCooler(cse, need);
+      add('bad', `The ${cse.name} has no mounting spot for a ${cool.rad} mm radiator.`, alt && { label: `Use ${alt.name}`, set: { cooler: alt.id } });
+    } else add('ok', `The ${cool.rad} mm radiator fits in the ${spots.join(' or ')} of the ${cse.name}.`);
+  }
+  if (cap > 0 && cool.kind !== 'box') {
+    if (cap < need) {
+      const alt = bestCooler(cse, need);
+      add('bad', `This cooler handles about ${cap} W, but ${cpu.name} can pull around ${Math.round(cw)} W while gaming. It would throttle.`, alt && alt.id !== cool.id && { label: `Use ${alt.name}`, set: { cooler: alt.id } });
+    } else if (cap < need * 1.25) add('warn', `Cooling is marginal: about ${cap} W of cooling for a processor that can use around ${Math.round(cw)} W. Expect loud fans in long sessions.`);
+  }
+
+  /* power supply */
+  const okType = cse.psu.includes(psu.type);
+  if (!okType) {
+    const alt = PCB_PSUS.filter(p => cse.psu.includes(p.type) && p.w >= psu.w).sort((a, b) => a.price - b.price)[0];
+    add('bad', `The ${cse.name} takes ${cse.psu.join(' or ')} power supplies only, and this one is ${psu.type}.`, alt && { label: `Use ${alt.name}`, set: { psu: alt.id } });
+  } else if (psu.len > cse.psuLen) {
+    const alt = PCB_PSUS.filter(p => cse.psu.includes(p.type) && p.len <= cse.psuLen && p.w >= psu.w).sort((a, b) => a.price - b.price)[0];
+    add('bad', `This power supply is about ${psu.len} mm long, and the ${cse.name} fits ${cse.psuLen} mm.`, alt && { label: `Use ${alt.name}`, set: { psu: alt.id } });
+  } else {
+    fit.psu = { len: psu.len, max: cse.psuLen };
+    if (psu.type === 'SFX' && cse.psu.includes('ATX')) add('info', 'An SFX power supply fits an ATX case with a mounting bracket, which is usually included. It costs more per watt than an ATX supply.');
+  }
+  const pAlt = PCB_PSUS.filter(p => cse.psu.includes(p.type) && p.len <= cse.psuLen && p.w >= rec).sort((a, b) => a.price - b.price)[0];
+  if (psu.w < draw * 1.15) add('bad', `Estimated load is about ${draw} W and this ${psu.w} W supply has almost no margin. Games would crash or the PC would shut down.`, pAlt && { label: `Use ${pAlt.name}`, set: { psu: pAlt.id } });
+  else if (psu.w < rec) add('warn', `Estimated load is about ${draw} W. A ${psu.w} W supply works but runs close to its limit. ${rec} W or more is recommended.`, pAlt && { label: `Use ${pAlt.name}`, set: { psu: pAlt.id } });
+  else add('ok', `Estimated load is about ${draw} W, so the ${psu.w} W supply has comfortable headroom.`);
+
+  /* storage and airflow */
+  if (ssd.kind === 'nvme' && !brd.nvme) add('warn', `${brd.chip} boards are too old to boot reliably from NVMe drives. A SATA SSD is the safer choice.`, { label: 'Use a SATA SSD', set: { ssd: 'sata-1t' } });
+  else if (ssd.kind === 'nvme' && ssd.gen > brd.m2Gen) add('info', `This PCIe ${ssd.gen}.0 drive will run at PCIe ${brd.m2Gen}.0 speed on this board. Games load about the same, so the extra cost buys little.`);
+  if (ssd.kind === 'hdd') add('info', 'A hard drive makes Windows and game loading much slower. Use an SSD for the system and your games.');
+  if (cse.fans < 2) add('info', `The ${cse.name} includes only ${cse.fans} fan. Adding a front intake fan is a cheap way to cut temperatures.`);
+
+  /* estimated speed and temperatures */
+  const fam = memFamily(brd), eff = memEffective(brd, kit), mf = memFactor(fam, eff.speed);
+  const chan = kit.sticks === 1 ? 0.87 : 1;
+  const effGen = Math.min(cpuPcieGen(cpu), brd.gpuGen);
+  let gF = igpu ? mf * (kit.sticks === 1 ? 0.75 : 1) : pcieFactor(gpu, effGen);
+  const opt = { memF: mf * chan, gF };
+  const e = estimate(game, cpu, gpu, kit.gb, res, 'high', opt), e0 = estimate(game, cpu, gpu, kit.gb, res, 'high', {});
+  const air = AIRFLOW[cse.air];
+  let cT = null, gT = null;
+  if (cap > 0) {
+    const factor = 0.55 * Math.pow(65 / cap, 0.6);
+    cT = 24 + 12 + (isKClass(cpu) ? 6 : 0) + factor * cw * 0.55 + air[1];
+  }
+  if (!igpu) gT = 24 + 32 + gw * 0.04 + air[2];
+  if (cT !== null && cT + 5 >= 90) add('warn', 'The processor would run close to its throttle point in this case. A stronger cooler or more case fans will help.');
+  if (gT !== null && gT + 5 >= 85) add('warn', 'The graphics card would run near its limit in this case. More airflow will help.');
+
+  const total = cse.price + brd.price + cpuPrice(cpu) + cool.price + kit.price + gpuPrice(gpu) + ssd.price + psu.price;
+  checks.sort((a, b) => SEV_RANK[a.sev] - SEV_RANK[b.sev]);
+  /* re-map fix indexes after sorting is not needed because each check keeps its own index */
+  pcbFixes = fixes;
+  return { s, checks, fit, e, e0, draw, rec, cT, gT, total, eff, mf: mf * chan };
+}
+
+function pcbMeter(label, val, max, unit, margin) {
+  const ratio = val / max, c = val > max ? 'c-bad' : (margin && val > max - margin) ? 'c-warn' : 'c-good', detail = '';
+  return `<div class="meter ${c}"><div class="meter-h"><span>${esc(label)}</span><strong>${detail || `${val} ${unit} of ${max} ${unit}`}</strong></div>` +
+    `<div class="meter-track" role="img" aria-label="${esc(label)}: ${val} of ${max} ${unit}"><i style="width:${Math.min(100, ratio * 100).toFixed(1)}%"></i></div></div>`;
+}
+const RANGE = t => [Math.round(t - 5), Math.round(t + 5)];
+
+function renderPcb() {
+  const out = $('#pcbOut'); if (!out) return;
+  const r = pcbEval(), s = r.s, { cse, brd, cpu, cool, kit, gpu, gsz, ssd, psu, game, res } = s;
+  /* keep the pickers in step with the state */
+  const vals = { case: cse.id, board: brd.id, cpu: cpu.name, cooler: cool.id, kit: kit.id, gpu: gpu.name, gsize: gsz, ssd: ssd.id, psu: psu.id, res, game: game.id };
+  Object.keys(vals).forEach(k => { const el = $('#pcb-' + k); if (el && el.value !== vals[k]) el.value = vals[k]; });
+  $('#pcb-gsize').disabled = isIntegrated(gpu);
+  const hint = (k, t) => { const el = $('#pcb-' + k + '-h'); if (el) el.textContent = t; };
+  hint('case', `${cse.ff.map(f => FF_NAME[f]).join(', ')} boards. Card up to ${cse.gpu} mm, cooler up to ${cse.cooler} mm, ${cse.fans} fan${cse.fans === 1 ? '' : 's'} included.`);
+  hint('board', `${sockName(brd.sock)}, ${brd.mem} only, ${brd.dimm} memory slots, PCIe ${brd.gpuGen}.0 graphics slot, ${brd.oc ? 'CPU overclocking allowed' : 'no CPU overclocking'}.`);
+  hint('cpu', `${sockName(cpuSock(cpu))} socket${boxedCooler(cpu) ? ', cooler included' : ', no cooler included'}${igpuOf(cpu) ? ', has integrated graphics' : ''}.`);
+  hint('cooler', cool.kind === 'box' ? 'Included cooler, about 65 W of cooling.' : cool.kind === 'air' ? `${cool.h} mm tall, about ${cool.cap} W of cooling.` : `${cool.rad} mm radiator, about ${cool.cap} W of cooling.`);
+  hint('kit', `${kit.type}-${kit.speed}, ${kit.sticks} stick${kit.sticks === 1 ? '' : 's'}${kit.prof ? ', ' + kit.prof + ' profile' : ''}.`);
+  hint('gpu', isIntegrated(gpu) ? 'Uses the processor graphics.' : `${gpu.v} GB video memory, about ${gpuWatts(gpu)} W, ${gpuLen(gpu, gsz)} mm long as chosen.`);
+  hint('psu', `${psu.type}, about ${psu.len} mm long${psu.native ? ', native 12V-2x6 cable' : ''}.`);
+
+  const bad = r.checks.filter(c => c.sev === 'bad').length, warn = r.checks.filter(c => c.sev === 'warn').length;
+  const verdict = bad ? { c: 'c-bad', t: `Will not work as built: ${bad} problem${bad === 1 ? '' : 's'} to fix` }
+    : warn ? { c: 'c-ok', t: `Compatible, with ${warn} thing${warn === 1 ? '' : 's'} to check` } : { c: 'c-good', t: 'Compatible: every check passed' };
+  const icon = { ok: '✓', warn: '!', bad: '✕', info: 'i' }, word = { ok: 'Passed', warn: 'Warning', bad: 'Problem', info: 'Note' };
+  const checkHtml = r.checks.map(c => `<li><span class="${c.sev === 'warn' ? 'no' : c.sev}" aria-hidden="true">${icon[c.sev]}</span><span><span class="sr">${word[c.sev]}: </span>${esc(c.text)}` +
+    (c.fix !== undefined ? ` <button type="button" class="btn alt pcb-fix" data-fix="${c.fix}">${esc(pcbFixes[c.fix].label)}</button>` : '') + '</span></li>').join('');
+
+  const e = r.e, delta = r.e0.fps - e.fps;
+  const lim = e.limiter === 'gpu' ? 'The graphics card is the limit in this game.' : e.limiter === 'cpu' ? 'The processor is the limit in this game.' : 'The processor and graphics card are well matched here.';
+  const cT = r.cT === null ? null : RANGE(r.cT), gT = r.gT === null ? null : RANGE(r.gT);
+  const tempLine = (label, t) => t ? `<li><span class="pk">${label}</span><span class="${tcls(t[1])}" style="font-weight:700">${t[0]}–${t[1]} °C</span><span class="pp">${toF(t[0])}–${toF(t[1])} °F</span></li>` : '';
+  const memNote = delta > 0 ? `Your memory and slot choices cost about ${delta} FPS compared with a perfect setup (${r.e0.fps} FPS).` : (r.mf > 1.005 ? 'Your memory speed gives a small boost in processor-limited games.' : 'Your memory and slot choices are not holding this build back.');
+  const perf = `<article class="ucard"><h3>${esc(game.name)}</h3><p class="sub2">${RES[res].label} High, estimated for this build${bad ? ' once the problems below are fixed' : ''}</p>` +
+    `<div class="big ${cls(e.fps)}">${e.fps}<small>FPS</small></div><p class="gainline">1% lows about ${e.lows} FPS. ${esc(lim)} ${esc(memNote)}</p>` +
+    `<ul class="parts" style="margin-top:16px">${tempLine('CPU temp', cT)}${tempLine('GPU temp', gT)}` +
+    `<li><span class="pk">Load</span><span>About ${r.draw} W in games</span><span class="pp">${psu.w} W supply</span></li></ul>` +
+    `<p class="gainline">Temperatures are rough estimates for a 24 °C room and this case's airflow.</p>` +
+    `<div style="margin-top:14px"><button type="button" class="btn alt" id="pcbSend">Use this CPU, GPU and memory in the calculator</button></div></article>`;
+
+  const rows = [
+    ['Case', cse.name, cse.price, cse.q], ['Motherboard', `${brd.chip} ${FF_NAME[brd.ff]} (${brd.mem})`, brd.price, `${brd.chip} ${brd.sock.replace(/^(LGA1151)[ab]$/, '$1')} ${brd.mem} ${FF_NAME[brd.ff]} motherboard`],
+    ['CPU', cpu.name, cpuPrice(cpu), cpu.name + ' processor'], ['Cooler', cool.kind === 'box' ? 'Included with the CPU' : cool.name, cool.price, cool.q || ''],
+    ['Memory', kit.name, kit.price, `${kit.gb}GB ${kit.type}-${kit.speed} desktop RAM kit`], ['GPU', isIntegrated(gpu) ? gpu.name : `${gpu.name}, ${GSIZE[gsz].toLowerCase()}`, gpuPrice(gpu), isIntegrated(gpu) ? '' : gpu.name + ' graphics card'],
+    ['Storage', ssd.name, ssd.price, ssd.name], ['Power', psu.name, psu.price, psu.name + ' power supply']
+  ].map(x => `<li><span class="pk">${esc(x[0])}</span><span>${esc(x[1])}</span><span class="pp">${x[2] ? money(x[2]) : 'Included'}</span>` +
+    (x[3] ? `<span class="lk">Check price: ${buyLinks(x[3], x[1])}</span>` : '') + '</li>').join('');
+  const parts = `<article class="ucard"><h3>Parts and price</h3><p class="sub2">Rough US dollar guides. Older parts are used-market prices.</p><ul class="parts">${rows}</ul>` +
+    `<div class="total"><span>Estimated total</span><span>${money(r.total)}</span></div><p class="gainline" style="margin-top:10px">Windows, a monitor and peripherals are not included.</p></article>`;
+
+  const meters = (r.fit.gpu ? pcbMeter('Graphics card length', r.fit.gpu.len, r.fit.gpu.max, 'mm', 10) : '') +
+    (r.fit.cool ? pcbMeter('CPU cooler height', r.fit.cool.h, r.fit.cool.max, 'mm', 4) : '') +
+    (r.fit.rad ? `<div class="meter ${r.fit.rad.spots.length ? 'c-good' : 'c-bad'}"><div class="meter-h"><span>Radiator</span><strong>${r.fit.rad.size} mm: ${r.fit.rad.spots.length ? 'fits in the ' + r.fit.rad.spots.join(' or ') : 'no mounting spot'}</strong></div></div>` : '') +
+    (r.fit.psu ? pcbMeter('Power supply length', r.fit.psu.len, r.fit.psu.max, 'mm') : '') +
+    `<div class="meter ${cse.ff.includes(brd.ff) ? 'c-good' : 'c-bad'}"><div class="meter-h"><span>Board size</span><strong>${FF_NAME[brd.ff]} board, case takes ${cse.ff.map(f => FF_NAME[f]).join(', ')}</strong></div></div>`;
+  const fitCard = `<article class="ucard"><h3>Fit inside the ${esc(cse.name)}</h3><p class="sub2">Green fits, amber is tight, red does not fit.</p>${meters}</article>`;
+
+  out.innerHTML = `<div class="pcb-verdict ${verdict.c}" role="status"><span aria-hidden="true">${bad ? '✕' : warn ? '!' : '✓'}</span><span>${esc(verdict.t)}</span></div>` +
+    `<div class="ucards" style="margin-top:16px">${perf}${fitCard}</div>` +
+    `<article class="ucard" style="margin-top:16px"><h3>Compatibility checks</h3><ul class="chk">${checkHtml}</ul></article>` +
+    `<div class="ucards" style="margin-top:16px">${parts}<article class="ucard"><h3>How this works</h3><ul class="chk"><li><span class="info" aria-hidden="true">i</span><span>Socket, memory generation, board size, cooler and card clearance, power supply and PCIe lanes are checked like a parts store would.</span></li><li><span class="info" aria-hidden="true">i</span><span>Memory speed, channel count and PCIe lanes change the FPS estimate, so DDR4 versus DDR5 and single versus dual channel show up in the numbers.</span></li><li><span class="info" aria-hidden="true">i</span><span>Case sizes come from the makers' listings. Card lengths and cooler ratings are typical values, so confirm the exact models before you buy.</span></li></ul></article></div>`;
+}
+
+function initPcb() {
+  const root = $('#pcbParts'); if (!root) return;
+  const grp = (label, items) => `<optgroup label="${esc(label)}">${items}</optgroup>`;
+  const opt = (v, t) => `<option value="${esc(v)}">${esc(t)}</option>`;
+  const cpuOrder = ['AM4', 'AM5', 'LGA1150', 'LGA1151', 'LGA1200', 'LGA1700', 'LGA1851'];
+  const cpuHtml = cpuOrder.map(sk => grp(sk === 'LGA1151' ? 'LGA1151 (Intel 6th to 9th gen)' : sk, CPUS.filter(c => c.s === sk).sort((a, b) => a.i - b.i).map(c => opt(c.name, c.name)).join(''))).join('');
+  const gpuGroups = [['NVIDIA GeForce', g => /^GeForce/.test(g.name)], ['AMD Radeon', g => /^Radeon/.test(g.name) && !isIntegrated(g)], ['Intel Arc', g => /^Intel Arc/.test(g.name)], ['Integrated graphics', g => isIntegrated(g)]];
+  const gpuHtml = gpuGroups.map(([l, f]) => grp(l, GPUS.filter(f).sort((a, b) => a.i - b.i).map(g => opt(g.name, g.name)).join(''))).join('');
+  const kitHtml = ['DDR3', 'DDR4', 'DDR5'].map(t => grp(t, PCB_KITS.filter(k => k.type === t).map(k => opt(k.id, k.name)).join(''))).join('');
+  const boardHtml = ['AM4', 'AM5', 'LGA1150', 'LGA1151a', 'LGA1151b', 'LGA1200', 'LGA1700', 'LGA1851'].map(sk => grp(sockName(sk), PCB_BOARDS.filter(b => b.sock === sk)
+    .map(b => opt(b.id, `${b.chip} ${FF_NAME[b.ff]}${b.sock === 'LGA1700' ? ' (' + b.mem + ')' : ''}, ${b.mem}`)).join(''))).join('');
+  const coolHtml = PCB_COOLERS.map(c => opt(c.id, c.name)).join('');
+  const gameGroups = {};
+  GAMES.forEach(g => { (gameGroups[g.grp] = gameGroups[g.grp] || []).push(g); });
+  const gameHtml = Object.keys(gameGroups).map(k => grp(k, gameGroups[k].map(g => opt(g.id, g.name)).join(''))).join('');
+  const field = (k, label, html) => `<div class="field"><label for="pcb-${k}">${label}</label><select id="pcb-${k}" data-pcb="${k}">${html}</select><small id="pcb-${k}-h" class="pcb-hint"></small></div>`;
+  root.innerHTML = field('case', 'Case', PCB_CASES.map(c => opt(c.id, c.name)).join('')) +
+    field('board', 'Motherboard', boardHtml) + field('cpu', 'Processor (CPU)', cpuHtml) + field('cooler', 'CPU cooler', coolHtml) + field('kit', 'Memory (RAM)', kitHtml) +
+    field('gpu', 'Graphics card (GPU)', gpuHtml) + field('gsize', 'Card size', Object.keys(GSIZE).map(k => opt(k, GSIZE[k])).join('')) +
+    field('ssd', 'Storage', PCB_SSDS.map(x => opt(x.id, x.name)).join('')) + field('psu', 'Power supply', PCB_PSUS.map(p => opt(p.id, p.name)).join('')) +
+    `<div class="pcb-row2">${field('game', 'Game to test', gameHtml)}${field('res', 'Resolution', Object.keys(RES).map(k => opt(k, RES[k].label)).join(''))}</div>`;
+  $('#pcbPresets').innerHTML = PCB_PRESETS.map((p, i) => `<button type="button" class="btn alt" data-preset="${i}">${esc(p.name)}</button>`).join('');
+  root.addEventListener('change', e => {
+    const k = e.target.dataset.pcb; if (!k) return;
+    if (k === 'game') { state.game = e.target.value; syncInputs(); render(); return; }
+    state.pcb[k] = e.target.value; render();
+  });
+  $('#pcbPresets').addEventListener('click', e => {
+    const b = e.target.closest('[data-preset]'); if (!b) return;
+    Object.assign(state.pcb, PCB_PRESETS[Number(b.dataset.preset)].set); render();
+  });
+  $('#pcbOut').addEventListener('click', e => {
+    const f = e.target.closest('[data-fix]');
+    if (f) { const fx = pcbFixes[Number(f.dataset.fix)]; if (fx) { Object.assign(state.pcb, fx.set); render(); toast('Swapped in the suggested part'); } return; }
+    if (e.target.closest('#pcbSend')) {
+      const s = pcbSel();
+      state.cpu = s.cpu.name; state.gpu = s.gpu.name;
+      state.ram = [64, 32, 16, 8, 4].find(n => n <= s.kit.gb) || 8;
+      syncInputs(); render(); toast('Sent to the calculator');
+      $('#results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
 }
 
 /* ---------- leaderboards ---------- */
@@ -1896,7 +2562,18 @@ const GAME_ALIAS = {
   witcher3: ['witcher'], spiderman: ['spiderman'], hogwarts: ['hogwarts'], starfield: ['starfield'], wilds: ['monsterhunter', 'wilds'], wukong: ['wukong'],
   minecraft: ['minecraft'], valorant: ['valorant'], cs2: ['counterstrike', 'cs2', 'csgo'], apex: ['apex'], fortnite: ['fortnite'],
   warzone: ['warzone', 'callofduty', 'cod'], bf6: ['battlefield', 'bf6'], rivals: ['marvelrivals', 'rivals'], ow2: ['overwatch', 'ow2'],
-  r6: ['rainbow', 'siege', 'r6'], helldivers: ['helldivers'], lol: ['leagueoflegends', 'lol'], rocket: ['rocketleague'], poe2: ['pathofexile', 'poe2'], forza: ['forza']
+  r6: ['rainbow', 'siege', 'r6'], helldivers: ['helldivers'], lol: ['leagueoflegends', 'lol'], rocket: ['rocketleague'], poe2: ['pathofexile', 'poe2'], forza: ['forza'],
+  acmirage: ['mirage', 'acmirage'], acshadows: ['acshadows'], alanwake2: ['alanwake'], avatar: ['pandora', 'avatar'], deathstranding: ['deathstranding'],
+  daysgone: ['daysgone'], doometernal: ['doom'], dyinglight2: ['dyinglight'], tsushima: ['tsushima'], gow: ['godofwar'], gowr: ['ragnarok', 'gowr'],
+  hzd: ['zerodawn', 'hzd'], hfw: ['forbiddenwest', 'hfw'], tlou: ['lastofus', 'tlou'], re4: ['residentevil', 're4'], jedi: ['jedisurvivor', 'jedi'],
+  sh2: ['silenthill'], stalker2: ['stalker'], fallout4: ['fallout'], skyrim: ['skyrim'], sims4: ['sims'], palworld: ['palworld'], satisfactory: ['satisfactory'],
+  cities2: ['citiesskylines'], msfs24: ['flightsimulator', 'msfs'], ets2: ['eurotruck', 'ets2'], civ6: ['civilization', 'civ6'], totalwar: ['totalwar'],
+  aoe4: ['ageofempires', 'aoe'], clair: ['clairobscur', 'expedition33'], kcd2: ['kingdomcome', 'kcd'], oblivion: ['oblivion'], dota2: ['dota'],
+  pubg: ['pubg', 'battlegrounds'], rust: ['rust'], tarkov: ['tarkov', 'eft'], deltaforce: ['deltaforce'], destiny2: ['destiny'], thefinals: ['thefinals'],
+  halo: ['halo'], deadlock: ['deadlock'], roblox: ['roblox'], warframe: ['warframe'], wow: ['worldofwarcraft', 'warcraft'], diablo4: ['diablo'],
+  bf2042: ['bf2042', 'battlefield2042'], fc25: ['fc25', 'eafc', 'fifa'], nba2k25: ['nba2k'], forzamotorsport: ['forzamotorsport'], f124: ['f124', 'formula1'],
+  acc: ['assettocorsa'], sot: ['seaofthieves'], phasmo: ['phasmophobia', 'phasmo'], dbd: ['deadbydaylight', 'dbd'], lethal: ['lethalcompany'],
+  tf2: ['teamfortress', 'tf2'], hunt: ['huntshowdown'], readyornot: ['readyornot']
 };
 function findGame(text) {
   const words = ' ' + text.toLowerCase().replace(/[^a-z0-9]+/g, ' ') + ' ', t = norm(text);
@@ -2079,7 +2756,7 @@ function initExtras() {
 let lastCtx = null;
 function render() {
   const cm = findItem(CPUS, state.cpu), gm = findItem(GPUS, state.gpu);
-  renderSaved(); renderStorage(); renderBuild(); renderBoard(); renderBench();
+  renderSaved(); renderStorage(); renderBuild(); renderBoard(); renderBench(); renderPcb();
   setHint('cpu', cm, x => `Matched: ${x.name} (${x.s} socket)`);
   setHint('gpu', gm, x => `Matched: ${x.name} (${x.v} GB video memory)`);
   const ok = cm.item && gm.item;
@@ -2116,6 +2793,7 @@ initConsent();
 initLegal();
 initInputs();
 initExtras();
+initPcb();
 render();
 })();
 </script>
